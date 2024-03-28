@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -95,16 +96,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="C.png" />
+    <None Include="Images\Back.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Back.jpg" />
+    <None Include="Images\C.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Java.png" />
+    <None Include="Images\Java.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Python.png" />
+    <None Include="Images\Python.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
