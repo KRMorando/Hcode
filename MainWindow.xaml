@@ -5,8 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hcode"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
-        
+        <Button x:Name="button" Content="C언어" HorizontalAlignment="Left" Click="OpenNewWindow_Click" Margin="131,332,0,0" VerticalAlignment="Top" Height="34" Width="90"/>
+        <Button x:Name="button1" Content="자바" HorizontalAlignment="Center" Margin="0,327,0,0" VerticalAlignment="Top" Height="34" Width="90"/>
+        <Button x:Name="button2" Content="파이썬" HorizontalAlignment="Left" Margin="588,327,0,0" VerticalAlignment="Top" Height="34" Width="90"/>
+        <Image Source="/C.png" HorizontalAlignment="Left" Height="145" Margin="110,0,0,0" VerticalAlignment="Center" Width="181"/>
+        <Button Click="OnClick5" Margin="82,126,531,126">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Image Source="/C.png" Stretch="Fill"/>
+                    </Grid>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Image Source="/Java.png" HorizontalAlignment="Left" Height="154" Margin="358,128,0,0" VerticalAlignment="Top" Width="209"/>
+        <Image Source="/Python.png" HorizontalAlignment="Left" Height="146" Margin="566,136,0,0" VerticalAlignment="Top" Width="146"/>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Back.jpg"/>
+        </Grid.Background>
     </Grid>
 </Window>

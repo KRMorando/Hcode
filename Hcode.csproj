@@ -94,5 +94,17 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="C.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Back.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Java.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Python.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
