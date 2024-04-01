@@ -13,15 +13,26 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Hcode {
-    /// <summary>
-    /// MainWindow.xaml에 대한 상호 작용 논리
-    /// </summary>
-    /// 
-    /// 테스트용 커밋
-    public partial class MainWindow : Window {
-        public MainWindow() {
+
+namespace Hcode
+{
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
             InitializeComponent();
+        }
+
+        private void OnClickCButton(object sender, RoutedEventArgs e)
+        {
+            Window newWindow = new NextWindow();
+            newWindow.Show();
+            this.Close();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
