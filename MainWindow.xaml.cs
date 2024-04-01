@@ -17,6 +17,7 @@ namespace Hcode {
     /// <summary>
     /// MainWindow.xaml에 대한 상호 작용 논리
     /// </summary>
+    /// 테스트용 커밋
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
