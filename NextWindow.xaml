@@ -1,12 +1,25 @@
 ﻿<Window x:Class="Hcode.NextWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Hcode"
-        mc:Ignorable="d"
-        Title="NextWindow" Height="450" Width="800">
+        Title="Next Window" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="CodeTextBox" Grid.Row="0" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+
+        <Button Grid.Row="1" Content="Compile" Click="CompileButton_Click" />
+        <Button Grid.Row="2" Content="Open File" Click="OpenFileButton_Click" />
+
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="Output:" />
+            <TextBox x:Name="OutputTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="100" />
+            <TextBlock Text="Error:" />
+            <TextBox x:Name="ErrorTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="100" />
+        </StackPanel>
     </Grid>
 </Window>
