@@ -1,27 +1,85 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Microsoft.Win32;
+
+
+
+
 
 namespace Hcode
 {
-    /// <summary>
-    /// NextWindow.xaml에 대한 상호 작용 논리
-    /// </summary>
     public partial class NextWindow : Window
     {
         public NextWindow()
         {
             InitializeComponent();
+        }
+
+        private void CompileButton_Click(object sender, RoutedEventArgs e)
+        {
+            string sourceCode = CodeTextBox.Text;
+
+
+            sourceCode = "#include <stdio.h>\n" + sourceCode;
+
+
+            string tempFile = Path.GetTempFileName();
+            string cTempFile = Path.ChangeExtension(tempFile, ".c");
+            File.WriteAllText(cTempFile, sourceCode);
+
+
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = @"C:\MinGW\bin\gcc.exe",
+                Arguments = $"-mconsole {cTempFile} -o {tempFile}.exe",
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+
+            using (Process process = Process.Start(psi))
+            {
+                if (process != null)
+                {
+
+                    StringBuilder output = new StringBuilder();
+                    StringBuilder error = new StringBuilder();
+                    process.OutputDataReceived += (s, args) => output.AppendLine(args.Data);
+                    process.ErrorDataReceived += (s, args) => error.AppendLine(args.Data);
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+                    process.WaitForExit();
+
+
+                    OutputTextBox.Text = output.ToString();
+                    ErrorTextBox.Text = error.ToString();
+
+
+                    if (process.ExitCode == 0)
+                    {
+                        File.WriteAllText("Result.txt", output.ToString());
+                        Process.Start($"{tempFile}.exe");
+                    }
+                }
+            }
+
+
+            File.Delete(tempFile);
+            File.Delete($"{tempFile}.exe");
+        }
+
+        private void OpenFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                CodeTextBox.Text = File.ReadAllText(openFileDialog.FileName);
+            }
         }
     }
 }
