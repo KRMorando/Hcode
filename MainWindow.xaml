@@ -7,15 +7,15 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Resources/Back.jpg"/>
+        </Grid.Background>
         <Button x:Name="button" Content="C언어" HorizontalAlignment="Left" Click="OnClickCButton" Margin="131,332,0,0" VerticalAlignment="Top" Height="34" Width="90"/>
         <Button x:Name="button1" Content="자바" HorizontalAlignment="Center" Margin="0,327,0,0" VerticalAlignment="Top" Height="34" Width="90"/>
         <Button x:Name="button2" Content="파이썬" HorizontalAlignment="Left" Margin="588,327,0,0" VerticalAlignment="Top" Height="34" Width="90"/>
-        <Image Source="/Hcode;component/Images/C.png" HorizontalAlignment="Left" Height="145" Margin="110,0,0,0" VerticalAlignment="Center" Width="181"/>
-        <Image Source="/Hcode;component/images/Java.png" HorizontalAlignment="Left" Height="154" Margin="358,128,0,0" VerticalAlignment="Top" Width="209"/>
-        <Image Source="/Hcode;component/images/Python.png" HorizontalAlignment="Left" Height="146" Margin="566,136,0,0" VerticalAlignment="Top" Width="146"/>
+        <Image Source="Resources/C.png" HorizontalAlignment="Left" Height="145" Margin="110,0,0,0" VerticalAlignment="Center" Width="181"/>
+        <Image Source="Resources/Java.png" HorizontalAlignment="Left" Height="154" Margin="358,128,0,0" VerticalAlignment="Top" Width="209"/>
+        <Image Source="Resources/Python.png" HorizontalAlignment="Left" Height="146" Margin="566,136,0,0" VerticalAlignment="Top" Width="146"/>
         <Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0" Click="CloseButton_Click" Height="28" Width="28"/>
-        <Grid.Background>
-            <ImageBrush ImageSource="/Hcode;component/images/Back.jpg"/>
-        </Grid.Background>
     </Grid>
 </Window>
