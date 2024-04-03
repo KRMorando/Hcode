@@ -7,8 +7,6 @@ using Microsoft.Win32;
 //코드 테스트
 
 
-
-
 namespace Hcode
 {
     public partial class NextWindow : Window
@@ -25,16 +23,18 @@ namespace Hcode
 
             sourceCode = "#include <stdio.h>\n" + sourceCode;
 
+            string FileName = TitleBox.Text;
+            string tempFile = Path.Combine(Path.GetTempPath(), FileName + ".exe");
 
-            string tempFile = Path.GetTempFileName();
-            string cTempFile = Path.ChangeExtension(tempFile, ".c");
+            string cTempFile = Path.ChangeExtension(Path.GetTempPath() + FileName, ".c");
             File.WriteAllText(cTempFile, sourceCode);
 
+            //file.split(".")[0];
 
             ProcessStartInfo psi = new ProcessStartInfo
             {
                 FileName = @"C:\MinGW\bin\gcc.exe",
-                Arguments = $"-mconsole {cTempFile} -o {tempFile}.exe",
+                Arguments = $"-mconsole {cTempFile} -o \"{tempFile}\"",
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -59,18 +59,16 @@ namespace Hcode
                     OutputTextBox.Text = output.ToString();
                     ErrorTextBox.Text = error.ToString();
 
-
-                    if (process.ExitCode == 0)
-                    {
-                        File.WriteAllText("Result.txt", output.ToString());
-                        Process.Start($"{tempFile}.exe");
-                    }
+                    //if (process.ExitCode == 0)
+                    //{
+                    //    File.WriteAllText("Result.txt", output.ToString());
+                    //    Process.Start($"{tempFile}.exe");
+                    //}
                 }
             }
 
 
-            File.Delete(tempFile);
-            File.Delete($"{tempFile}.exe");
+
         }
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)

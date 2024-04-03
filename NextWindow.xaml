@@ -10,7 +10,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="CodeTextBox" Grid.Row="0" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+        <TextBox x:Name="CodeTextBox" Grid.Row="0" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,49,-0.4,0.4" />
 
         <Button Grid.Row="1" Content="Compile" Click="CompileButton_Click" />
         <Button Grid.Row="2" Content="Open File" Click="OpenFileButton_Click" />
@@ -21,5 +21,6 @@
             <TextBlock Text="Error:" />
             <TextBox x:Name="ErrorTextBox" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Height="100" />
         </StackPanel>
+        <TextBox x:Name="TitleBox" HorizontalAlignment="Left" Height="49" Margin="0,0,-0.4,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="794"/>
     </Grid>
 </Window>
