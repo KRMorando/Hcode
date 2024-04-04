@@ -54,16 +54,15 @@ namespace Hcode
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                     process.WaitForExit();
-
+                    Console.WriteLine("Output: " + output.ToString());
 
                     OutputTextBox.Text = output.ToString();
                     ErrorTextBox.Text = error.ToString();
 
-                    //if (process.ExitCode == 0)
-                    //{
-                    //    File.WriteAllText("Result.txt", output.ToString());
-                    //    Process.Start($"{tempFile}.exe");
-                    //}
+                    if (process.ExitCode == 0) {
+                        File.WriteAllText(testPath + "/" + TitleBox.Text + " in Result.txt", output.ToString());
+                        Process.Start($"{exeFile}");
+                    }
                 }
             }
         }
