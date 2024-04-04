@@ -18,23 +18,27 @@ namespace Hcode
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
         {
-            string sourceCode = CodeTextBox.Text;
-
-
-            sourceCode = "#include <stdio.h>\n" + sourceCode;
+            // Hcode 폴더 경로 불러오기
+            string folderPath = "C:/Hcode";
+            string testPath = folderPath + "/test";
 
             string FileName = TitleBox.Text;
-            string tempFile = Path.Combine(Path.GetTempPath(), FileName + ".exe");
+            string sourceCode = CodeTextBox.Text;
 
-            string cTempFile = Path.ChangeExtension(Path.GetTempPath() + FileName, ".c");
-            File.WriteAllText(cTempFile, sourceCode);
+            DirectoryInfo directoryInfoPath = new DirectoryInfo(testPath);
+            string cFile = Path.ChangeExtension(testPath + "/" + FileName, ".c");
+            string exeFile = testPath + "/" + FileName + ".exe";
 
-            //file.split(".")[0];
+            // 폴더 유/무 체크
+            if (!directoryInfoPath.Exists)
+                directoryInfoPath.Create();
+
+            File.WriteAllText(cFile, sourceCode);
 
             ProcessStartInfo psi = new ProcessStartInfo
             {
                 FileName = @"C:\Program Files\LLVM\bin\clang.exe",
-                Arguments = $"-target x86_64-pc-windows-msvc {cTempFile} -o \"{tempFile}\"",
+                Arguments = $"-target x86_64-pc-windows-msvc {cFile} -o \"{exeFile}\"",
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -66,9 +70,6 @@ namespace Hcode
                     //}
                 }
             }
-
-
-
         }
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
