@@ -41,13 +41,13 @@
                 <Label Content="Output:" FontSize="11" VerticalContentAlignment="Center" Padding="5,0,0,0" />
             </Border>
             <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1,1,1,0">
-                <TextBlock x:Name="OutputTextBox" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                <TextBox x:Name="OutputTextBox" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Focusable="True" />
             </Border>
             <Border Grid.Row="2" BorderBrush="Black" BorderThickness="1,1,1,0">
                 <Label Content="Error:" FontSize="11" VerticalContentAlignment="Center" Padding="5,0,0,0" />
             </Border>
             <Border Grid.Row="3" BorderBrush="Black" BorderThickness="1,1,1,1">
-                <TextBlock x:Name="ErrorTextBox" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" FontSize="10" />
+                <TextBox x:Name="ErrorTextBox" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" FontSize="10" IsReadOnly="True" />
             </Border>
         </Grid>
     </DockPanel>
