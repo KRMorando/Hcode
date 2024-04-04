@@ -9,9 +9,9 @@ using Microsoft.Win32;
 
 namespace Hcode
 {
-    public partial class NextWindow : Window
+    public partial class CWindow : Window
     {
-        public NextWindow()
+        public CWindow()
         {
             InitializeComponent();
         }
@@ -21,17 +21,13 @@ namespace Hcode
             // Hcode 폴더 경로 불러오기
             string folderPath = "C:/Hcode";
             string testPath = folderPath + "/test";
+            DirectoryInfo directoryInfoPath = new DirectoryInfo(testPath);
 
             string FileName = TitleBox.Text;
-            string sourceCode = CodeTextBox.Text;
+            string sourceCode = "#include <stdio.h>\n" + CodeTextBox.Text;
 
-            DirectoryInfo directoryInfoPath = new DirectoryInfo(testPath);
             string cFile = Path.ChangeExtension(testPath + "/" + FileName, ".c");
             string exeFile = testPath + "/" + FileName + ".exe";
-
-            // 폴더 유/무 체크
-            if (!directoryInfoPath.Exists)
-                directoryInfoPath.Create();
 
             File.WriteAllText(cFile, sourceCode);
 
