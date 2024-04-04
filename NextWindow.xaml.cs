@@ -33,8 +33,8 @@ namespace Hcode
 
             ProcessStartInfo psi = new ProcessStartInfo
             {
-                FileName = @"C:\MinGW\bin\gcc.exe",
-                Arguments = $"-mconsole {cTempFile} -o \"{tempFile}\"",
+                FileName = @"C:\Program Files\LLVM\bin\clang.exe",
+                Arguments = $"-target x86_64-pc-windows-msvc {cTempFile} -o \"{tempFile}\"",
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
