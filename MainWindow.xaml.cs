@@ -13,10 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-// 8차 커밋
+// 9차 커밋
 
-namespace Hcode
-{
+namespace Hcode {
+
     public partial class MainWindow : Window
     {
         public MainWindow()

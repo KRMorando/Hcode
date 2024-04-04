@@ -10,12 +10,15 @@
         <Grid.Background>
             <ImageBrush ImageSource="Resources/Back.jpg"/>
         </Grid.Background>
-        <Button x:Name="button" Content="C언어" HorizontalAlignment="Left" Click="OnClickCButton" Margin="131,332,0,0" VerticalAlignment="Top" Height="34" Width="90"/>
-        <Button x:Name="button1" Content="자바" HorizontalAlignment="Center" Margin="0,327,0,0" VerticalAlignment="Top" Height="34" Width="90" Click="OnClickJButton"/>
-        <Button x:Name="button2" Content="파이썬" HorizontalAlignment="Left" Margin="588,327,0,0" VerticalAlignment="Top" Height="34" Width="90" Click="OnClickPButton"/>
-        <Image Source="Resources/C.png" HorizontalAlignment="Left" Height="145" Margin="110,0,0,0" VerticalAlignment="Center" Width="181"/>
-        <Image Source="Resources/Java.png" HorizontalAlignment="Left" Height="154" Margin="358,128,0,0" VerticalAlignment="Top" Width="209"/>
-        <Image Source="Resources/Python.png" HorizontalAlignment="Left" Height="146" Margin="566,136,0,0" VerticalAlignment="Top" Width="146"/>
+        <Button x:Name="button" HorizontalAlignment="Left" Click="OnClickCButton" Margin="110,0,0,0" VerticalAlignment="Center" Height="145" Width="181" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+            <Image Source="Resources/C.png"/>
+        </Button>
+        <Button x:Name="button1" HorizontalAlignment="Center" VerticalAlignment="Center" Height="154" Width="209" Click="OnClickJButton" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+            <Image Source="Resources/Java.png" />
+        </Button>
+        <Button x:Name="button2" HorizontalAlignment="Left" Margin="547,0,0,0" VerticalAlignment="Center" Height="146" Width="146" Click="OnClickPButton" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+            <Image Source="Resources/Python.png" />
+        </Button>
         <Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,10,0" Click="CloseButton_Click" Height="28" Width="28"/>
     </Grid>
 </Window>
