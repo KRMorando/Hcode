@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Windows;
-//12차 커밋
+//14차 커밋
 
 namespace Hcode {
 
@@ -21,27 +21,29 @@ namespace Hcode {
             InitializeComponent();
         }
 
+        // 여러가지 버튼 이벤트들은 모든 컴파일러 및 인터프리터 기능이 구현된 후에 하나의 파일(.xaml, .cs)로 합쳐질 예정
         private void OnClickCButton(object sender, RoutedEventArgs e)
         {
-            Window newWindow = new CWindow();
+            Window newWindow = new ShortCutWindow(this, "C");
             newWindow.Show();
-            this.Close();
         }
         private void OnClickJButton(object sender, RoutedEventArgs e) {
-            Window newWindow = new JavaWindow();
+            Window newWindow = new ShortCutWindow(this, "Java");
             newWindow.Show();
             this.Close();
         }
         private void OnClickPButton(object sender, RoutedEventArgs e) {
-            Window newWindow = new PythonWindow();
+            Window newWindow = new ShortCutWindow(this, "Python");
             newWindow.Show();
             this.Close();
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
+        private void ToMiniButton_Click(object sender, RoutedEventArgs e) {
+            this.WindowState = WindowState.Minimized;
         }
 
+        private void CloseButton_Click(object sender, RoutedEventArgs e) {
+            this.Close();
+        }
     }
 }
