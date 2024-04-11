@@ -131,9 +131,23 @@ namespace Hcode
                 {
                     int caretIndex = textBox.CaretIndex;
                     string closingBracket = addedText == "{" ? "}" : (addedText == "(" ? ")" : (addedText == "[" ? "]" : (addedText == "'" ? "'" : "\"")));
-                    textBox.Text = textBox.Text.Insert(offset + addedLength, closingBracket);
-                    textBox.CaretIndex = caretIndex;
+
+                    
+                    if (offset + addedLength < textBox.Text.Length && textBox.Text[offset + addedLength] == closingBracket[0])
+                    {
+                        // 이미 같은 종류의 괄호가 입력된 경우에는 추가하지 않음
+                        textBox.CaretIndex = caretIndex;
+                    }
+
+
+                    //기존 방식 그대로
+                    else
+                    {
+                        textBox.Text = textBox.Text.Insert(offset + addedLength, closingBracket);
+                        textBox.CaretIndex = caretIndex; 
+                    }
                 }
+
             }
         }
 
