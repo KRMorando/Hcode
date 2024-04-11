@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using System.Windows.Input;
 
 namespace Hcode
 {
@@ -21,9 +22,18 @@ namespace Hcode
         {
             this.fileName = fileName;
             InitializeComponent();
+            this.MouseLeftButtonDown += new MouseButtonEventHandler(MainWindow_MouseLeftButtonDown);
             // CodeTextBox의 TextChanged 이벤트에 CodeTextBox_TextChanged 메서드를 연결
             CodeTextBox.TextChanged += CodeTextBox_TextChanged;
             FileName_Label.Content = fileName;
+        }
+
+        private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+
+        {
+
+            this.DragMove();
+
         }
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
