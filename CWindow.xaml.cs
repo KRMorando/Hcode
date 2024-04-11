@@ -21,7 +21,11 @@ namespace Hcode
         public CWindow(string selectLanguage, string fileName)
         {
             this.fileName = fileName;
-            InitializeComponent();
+
+            this.MinHeight = 800;
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight - 5;
+
+            this.InitializeComponent();
             this.MouseLeftButtonDown += new MouseButtonEventHandler(MainWindow_MouseLeftButtonDown);
             // CodeTextBox의 TextChanged 이벤트에 CodeTextBox_TextChanged 메서드를 연결
             CodeTextBox.TextChanged += CodeTextBox_TextChanged;
@@ -29,11 +33,8 @@ namespace Hcode
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-
         {
-
             this.DragMove();
-
         }
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
@@ -185,8 +186,8 @@ namespace Hcode
             string sourceCode = CodeTextBox.Text;
 
             // 파일 이름.c 경로
-            string cFile = testPath + "/" + FileName_Label.Content + ".c";
-            Console.WriteLine("파일 이름: " + FileName_Label.Content);
+            string cFile = testPath + "/" + FileName_Label.Content.ToString() + ".c";
+            Console.WriteLine("파일 이름: " + FileName_Label.Content.ToString());
 
             // .c 파일에 소스 코드 작성
             File.WriteAllText(cFile, sourceCode);
@@ -196,5 +197,31 @@ namespace Hcode
         {
             this.Close();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            AdjustWindowSize();
+        }
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            AdjustWindowSize();
+        }
+
+        private void AdjustWindowSize()
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                // Get the screen working area (excluding taskbar)
+                var screen = System.Windows.Forms.Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                var workingArea = screen.WorkingArea;
+
+                // Calculate the size and position of the window
+                this.Left = workingArea.Left;
+                this.Top = workingArea.Top;
+                this.Width = workingArea.Width;
+                this.Height = workingArea.Height;
+            }
+        }
+
     }
 }

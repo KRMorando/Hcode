@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Input;
-//17차 커밋
+//18차 커밋
 
 namespace Hcode {
 
@@ -9,7 +9,6 @@ namespace Hcode {
     {
         public MainWindow()
         {
-           
             // Hcode 폴더 경로 불러오기
             string folderPath = "C:/Hcode";
             string testPath = folderPath + "/test";
@@ -22,14 +21,10 @@ namespace Hcode {
 
             InitializeComponent();
             this.MouseLeftButtonDown += new MouseButtonEventHandler(MainWindow_MouseLeftButtonDown);
-
         }
         private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-
         {
-
             this.DragMove();
-
         }
 
         // 여러가지 버튼 이벤트들은 모든 컴파일러 및 인터프리터 기능이 구현된 후에 하나의 파일(.xaml, .cs)로 합쳐질 예정
