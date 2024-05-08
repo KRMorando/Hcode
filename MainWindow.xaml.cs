@@ -1,9 +1,10 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Input;
-//18차 커밋
+//19차 커밋
 
-namespace Hcode {
+namespace Hcode
+{
 
     public partial class MainWindow : Window
     {
@@ -33,22 +34,26 @@ namespace Hcode {
             Window newWindow = new ShortCutWindow(this, "C");
             newWindow.Show();
         }
-        private void OnClickJButton(object sender, RoutedEventArgs e) {
+        private void OnClickJButton(object sender, RoutedEventArgs e)
+        {
             Window newWindow = new ShortCutWindow(this, "Java");
             newWindow.Show();
             this.Close();
         }
-        private void OnClickPButton(object sender, RoutedEventArgs e) {
+        private void OnClickPButton(object sender, RoutedEventArgs e)
+        {
             Window newWindow = new ShortCutWindow(this, "Python");
             newWindow.Show();
             this.Close();
         }
 
-        private void ToMiniButton_Click(object sender, RoutedEventArgs e) {
+        private void ToMiniButton_Click(object sender, RoutedEventArgs e)
+        {
             this.WindowState = WindowState.Minimized;
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e) {
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
             this.Close();
         }
     }

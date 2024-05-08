@@ -16,6 +16,17 @@
                 </Setter.Value>
             </Setter>
         </Style>-->
+        <Style x:Key="WindowStyleNoneStripBar" TargetType="{x:Type Window}">
+            <Setter Property="WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <WindowChrome CaptionHeight="0"
+                            CornerRadius="2"
+                            GlassFrameThickness="0"
+                            NonClientFrameEdges="None"
+                            ResizeBorderThickness="3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style TargetType="TextBox">
             <Setter Property="CaretBrush" Value="White"/>
         </Style>
@@ -30,7 +41,7 @@
             <Setter Property="Background" Value="{x:Null}"/>
             <Setter Property="BorderBrush" Value="{x:Null}"/>
         </Style>
-        
+
         <!-- Button Disabled 부분인데 수정 요함 (보류) -->
         <Style x:Key="DisabledButton" TargetType="{x:Type Button}">
             <Setter Property="Template">
