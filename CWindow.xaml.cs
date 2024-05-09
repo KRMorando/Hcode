@@ -209,6 +209,11 @@ namespace Hcode
             }
         }
 
+
+
+
+
+
         private void CodeTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -220,6 +225,8 @@ namespace Hcode
                 int offset = change.Offset;
                 int addedLength = change.AddedLength;
                 string addedText = textBox.Text.Substring(offset, addedLength);
+                int caretIndex2 = textBox.CaretIndex;
+                string text = textBox.Text;
 
                 // 새로 추가된 문자가 괄호나 따옴표인지 확인합니다.
                 if (addedText == "{" || addedText == "(" || addedText == "[" || addedText == "'" || addedText == "\"")
@@ -250,10 +257,11 @@ namespace Hcode
                         }
                     }
                 }
+               
             }
         }
 
-
+       
         private void ToMiniButton_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -368,6 +376,65 @@ namespace Hcode
             nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
 
             TextBoxBorder.Child = nowTextBox;
+        }
+
+
+        // 클랭-포맷을 활용한 들여쓰기
+        private void IndentButton_Click(object sender, RoutedEventArgs e)
+        {
+            string code = nowTextBox.Text;
+
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = @"C:\Program Files\LLVM\bin\clang-format.exe",
+                Arguments = "-style=LLVM",
+                /*
+                  Google 스타일: "-style=google"
+                  LLVM 스타일: "-style=llvm"
+                  GNU 스타일: "-style=gnu"
+                  Chromium 스타일: "-style=chromium"
+                  file: "-style=file"
+                  custom: "-style={key: value, key: value, ...}"
+                  fallback: "-style=fallback"
+                  none: "-style=none"
+                  */
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (Process process = Process.Start(psi))
+            {
+                if (process != null)
+                {
+                    using (StreamWriter sw = process.StandardInput)
+                    {
+                        if (sw.BaseStream.CanWrite)
+                        {
+                            // 코드를 입력 스트림으로 전달
+                            sw.WriteLine(code);
+                            sw.Flush();
+                        }
+                    }
+
+                    // clang-format에서 처리된 코드를 읽어옵니다.
+                    string formattedCode = process.StandardOutput.ReadToEnd();
+
+                    // clang-format 프로세스 종료 대기
+                    process.WaitForExit();
+
+                    // 들여쓴 코드를 텍스트 상자에 설정합니다.
+                    nowTextBox.Text = formattedCode;
+                }
+            }
+        }
+
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
