@@ -6,23 +6,41 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using System.Windows.Input;
+using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace Hcode
 {
     public partial class CWindow : Window
     {
-        // 파일 이름
-        private string fileName;
         // Hcode 폴더 경로 불러오는곳
         private static string folderPath = "C:/Hcode";
         private static string testPath = folderPath + "/test";
         private static DirectoryInfo directoryInfoPath = new DirectoryInfo(testPath);
 
+        private List<string> fileNames = new List<string>();
+        private List<TextBox> textBoxes = new List<TextBox>();
+        private List<Button> fileButtons = new List<Button>();
+
+        private string nowFile;
+        private TextBox nowTextBox;
+        private Button nowButton;
+
+        private bool isFirst = true;
+
         public CWindow(string selectLanguage, string fileName)
         {
-            this.fileName = fileName;
-
             this.InitializeComponent();
+
+            fileNames.Add(fileName);
+            textBoxes.Add(CodeTextBox);
+            fileButtons.Add(fileButton0);
+
+            nowFile = fileName;
+            nowTextBox = CodeTextBox;
+            nowButton = fileButton0;
+
+            fileButton0.Content = fileName;
 
             this.MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
             this.MinHeight = 900;
@@ -30,20 +48,17 @@ namespace Hcode
 
             this.MouseLeftButtonDown += new MouseButtonEventHandler(MainWindow_MouseLeftButtonDown);
             // CodeTextBox의 TextChanged 이벤트에 CodeTextBox_TextChanged 메서드를 연결
-            CodeTextBox.TextChanged += CodeTextBox_TextChanged;
-            FileName_Label.Content = fileName;
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
-            ;
         }
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
         {
             // 사용자가 입력한 파일명을 가져옵니다.
-            string fileName = FileName_Label.Content.ToString();
+            string fileName = nowFile;
 
             // 파일명이 null이거나 빈 문자열인지 확인합니다.
             if (string.IsNullOrEmpty(fileName))
@@ -53,7 +68,7 @@ namespace Hcode
             }
 
             // 파일 내용을 가져옵니다.
-            string sourceCode = CodeTextBox.Text;
+            string sourceCode = nowTextBox.Text;
 
             // 파일 경로
             string cFile = Path.Combine(testPath, $"{fileName}.c");
@@ -131,17 +146,66 @@ namespace Hcode
             }
         }
 
-
-
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
             // 파일을 열기 위한 OpenFileDialog 호출
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                // 선택된 파일의 파일명 및 내용 표시
-                FileName_Label.Content = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
-                CodeTextBox.Text = File.ReadAllText(openFileDialog.FileName);
+                String fileName = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                bool isChecked = false;
+                for (int i = 0; i < fileNames.Count; i++)
+                {
+                    if (fileNames[i].Equals(fileName))
+                    {
+                        DisabledComponent();
+
+                        nowFile = fileNames[i];
+                        nowTextBox = textBoxes[i];
+                        nowButton = fileButtons[i];
+
+                        EnabledComponent();
+                        isChecked = true;
+                        break;
+                    }
+                }
+                if (!isChecked)
+                {
+                    Button newButton = new Button();
+                    newButton.Content = fileName;
+                    newButton.Margin = new Thickness(0, 0, 2, 0);
+                    newButton.Width = 100;
+                    newButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3E3E3E"));
+                    newButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
+                    newButton.Foreground = Brushes.White;
+                    newButton.BorderThickness = new Thickness(0, 2, 0, 0);
+                    newButton.Click += FileButton_Click;
+
+                    TextBox newTextBox = new TextBox();
+                    newTextBox.TextWrapping = TextWrapping.Wrap;
+                    newTextBox.AcceptsReturn = true;
+                    newTextBox.Background = null;
+                    newTextBox.BorderBrush = null;
+                    newTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                    newTextBox.Padding = new Thickness(5);
+                    newTextBox.Foreground = Brushes.White;
+                    newTextBox.FontSize = 20;
+                    newTextBox.TextChanged += CodeTextBox_TextChanged;
+                    newTextBox.Text = File.ReadAllText(openFileDialog.FileName);
+                    
+                    buttonPanel.Children.Add(newButton);
+                    TextBoxBorder.Child = newTextBox;
+
+                    DisabledComponent();
+
+                    nowFile = fileName;
+                    nowTextBox = newTextBox;
+                    nowButton = newButton;
+
+                    fileNames.Add(nowFile);
+                    textBoxes.Add(newTextBox);
+                    fileButtons.Add(newButton);
+                }
             }
         }
 
@@ -202,12 +266,14 @@ namespace Hcode
                 this.ResizeMode = ResizeMode.CanResize;
                 this.WindowState = WindowState.Normal;
                 SizeButton.Content = "1";
+                ShadowBorder.Margin = new Thickness(5);
             }
             else if (this.WindowState == WindowState.Normal)
             {
                 this.ResizeMode = ResizeMode.NoResize;
                 this.WindowState = WindowState.Maximized;
                 SizeButton.Content = "2";
+                ShadowBorder.Margin = new Thickness(0);
             }
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -215,13 +281,31 @@ namespace Hcode
             this.Close();
         }
 
+        private void FileButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button clickedButton = sender as Button;
+            string fileName = clickedButton.Content.ToString();
+            for (int i = 0; i < fileNames.Count; i++)
+            {
+                if (fileNames[i].Equals(fileName))
+                {
+                    DisabledComponent();
+
+                    nowFile = fileNames[i];
+                    nowTextBox = textBoxes[i];
+                    nowButton = fileButtons[i];
+
+                    EnabledComponent();
+                }
+            }
+        }
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            string sourceCode = CodeTextBox.Text;
-
             // 파일 이름.c 경로
-            string cFile = testPath + "/" + FileName_Label.Content.ToString() + ".c";
-            Console.WriteLine("파일 이름: " + FileName_Label.Content.ToString());
+            string cFile = testPath + "/" + nowFile + ".c";
+            string sourceCode = nowTextBox.Text;
+
 
             // .c 파일에 소스 코드 작성
             File.WriteAllText(cFile, sourceCode);
@@ -230,23 +314,20 @@ namespace Hcode
 
         private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // 사용자가 입력한 파일명을 가져옵니다.
-            string fileName = FileName_Label.Content.ToString();
-
             // 파일명이 null이거나 빈 문자열인지 확인합니다.
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(nowFile))
             {
                 MessageBox.Show("파일명을 입력하세요.", "경고", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             // 파일 내용을 가져옵니다.
-            string code = CodeTextBox.Text;
+            string code = nowTextBox.Text;
 
             try
             {
                 // 파일을 저장할 경로를 지정합니다.
-                string filePath = Path.Combine(testPath, $"{fileName}.c");
+                string filePath = Path.Combine(testPath, $"{nowFile}.c");
 
                 // 파일을 저장합니다.
                 File.WriteAllText(filePath, code);
@@ -260,15 +341,24 @@ namespace Hcode
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void OnClickCButton(object sender, RoutedEventArgs e)
         {
             Window newWindow = new ShortCutWindow(this, "C");
             newWindow.Show();
+        }
+
+        private void DisabledComponent()
+        {
+            nowTextBox.Visibility = Visibility.Collapsed;
+            nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3E3E3E"));
+        }
+
+        private void EnabledComponent()
+        {
+            nowTextBox.Visibility = Visibility.Visible;
+            nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
+
+            TextBoxBorder.Child = nowTextBox;
         }
     }
 }

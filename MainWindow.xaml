@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hcode"
         mc:Ignorable="d"
-        Height="450" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" Foreground="{x:Null}" Background="{x:Null}">
+        Height="450" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" Foreground="{x:Null}" Background="{x:Null}" AllowsTransparency="True">
     <Border
-Margin="5"
-BorderBrush="Gray"
-BorderThickness="0"
-Background="#FF1D1D1D">
+        Margin="5"
+        BorderBrush="Gray"
+        BorderThickness="0"
+        Background="#FF1D1D1D">
         <Border.Effect>
             <DropShadowEffect
         ShadowDepth="0"

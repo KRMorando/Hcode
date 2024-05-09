@@ -4,10 +4,11 @@
         Style="{DynamicResource WindowStyleNoneStripBar}"
         Height="1080" Width="1920" WindowStyle="None" Foreground="{x:Null}" Background="{x:Null}" WindowState="Maximized" ResizeMode="NoResize" AllowsTransparency="True">
     <Border
-    Margin="5"
-    BorderBrush="Gray"
-    BorderThickness="0"
-    Background="#FF1D1D1D">
+        x:Name="ShadowBorder"
+        Margin="0"
+        BorderBrush="Gray"
+        BorderThickness="0"
+        Background="#FF1D1D1D">
         <Border.Effect>
             <DropShadowEffect
             ShadowDepth="0"
@@ -67,7 +68,7 @@
                         x:Name="CloseButton"
                         Content="r" Click="CloseButton_Click"/>
                     </Grid>
-                    <Label x:Name="FileName_Label" DockPanel.Dock="Right" Width="80" Content="파일명" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" BorderBrush="{Binding ElementName=border, Mode=OneWay}" FontSize="20"/>
+                    <!--<Label x:Name="FileName_Label" DockPanel.Dock="Right" Width="80" Content="파일명" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" BorderBrush="{Binding ElementName=border, Mode=OneWay}" FontSize="20"/>-->
                     <Label DockPanel.Dock="Top" Content="Hcode" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF52DA23" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                 </DockPanel>
             </Border>
@@ -80,13 +81,21 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="7*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="6.8*"/>
                     <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" BorderBrush="White" BorderThickness="0.5" Margin="1">
+                <StackPanel x:Name="buttonPanel" Grid.Row="0" Orientation="Horizontal" Margin="1,0,0,0">
+                    <Button
+                        x:Name="fileButton0"
+                        Content="파일명" Margin="0,0,2,0"
+                        Width="100" Background="#FF3E3E3E"
+                        Foreground="White" BorderThickness="0,2,0,0" BorderBrush="#FFC7C5C5" Click="FileButton_Click"/>
+                </StackPanel>
+                <Border x:Name="TextBoxBorder" Grid.Row="1" BorderBrush="White" BorderThickness="0.5" Margin="1">
                     <TextBox x:Name="CodeTextBox" TextWrapping="Wrap" AcceptsReturn="True" Background="{x:Null}" BorderBrush="{x:Null}" VerticalScrollBarVisibility="Auto" TextChanged="CodeTextBox_TextChanged" Padding="5" Foreground="White" FontSize="20" Text="#include &lt;stdio.h&gt;&#xD;&#xA;&#xD;&#xA;int main(void) {&#xD;&#xA;&#xD;&#xA;printf(&quot;Hello, World!&quot;);&#xD;&#xA;&#xD;&#xA;return 0;&#xD;&#xA;&#xD;&#xA;}"/>
                 </Border>
-                <Border Grid.Row="1" BorderBrush="White" BorderThickness="0.5" Margin="1">
+                <Border Grid.Row="2" BorderBrush="White" BorderThickness="0.5" Margin="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
