@@ -40,7 +40,8 @@
                             <MenuItem Header="_디버그 하지 않고 실행" Foreground="White" Background="#FF3E3E3E" Click="CompileButton_Click"/>
                         </MenuItem>
                         <MenuItem Header="_도움말" Margin="1">
-                            <MenuItem Header="미구현" Foreground="White" Background="#FF3E3E3E"/>
+                            <MenuItem Header="_도움말" Margin="1" Click="HelpButton_Click">
+                            </MenuItem>
 
                         </MenuItem>
                     </Menu>

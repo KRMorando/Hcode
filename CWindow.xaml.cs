@@ -347,6 +347,15 @@ namespace Hcode
             newWindow.Show();
         }
 
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            Window HelpWindow = new HelpWindow();
+            HelpWindow.Show();
+        }
+
+
+       
+
         private void DisabledComponent()
         {
             nowTextBox.Visibility = Visibility.Collapsed;
