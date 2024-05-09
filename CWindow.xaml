@@ -31,12 +31,7 @@
 
                             <MenuItem Header="_현재 파일 닫기" Foreground="White" Background="#FF3E3E3E"/>
                         </MenuItem>
-                        <MenuItem Header="_편집" Background="{x:Null}" BorderBrush="{x:Null}"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <MenuItem Header="_잘라내기" Foreground="White" Background="#FF3E3E3E"/>
-                            <MenuItem Header="_복사" Foreground="White" Background="#FF3E3E3E"/>
-                            <MenuItem Header="_붙여넣기" Foreground="White" Background="#FF3E3E3E"/>
-                            <MenuItem Header="_삭제" Foreground="White" Background="#FF3E3E3E"/>
-                        </MenuItem>
+                       
                         <MenuItem Header="_옵션" Margin="1">
 
                         </MenuItem>
