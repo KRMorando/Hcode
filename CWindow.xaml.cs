@@ -431,6 +431,27 @@ namespace Hcode
             }
         }
 
+        private void CodeTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Tab)
+            {
+                // 현재 커서 위치를 가져옵니다.
+                int caretIndex = CodeTextBox.CaretIndex;
+
+                // 현재 커서 위치에 탭 문자를 삽입합니다.
+                CodeTextBox.Text = CodeTextBox.Text.Insert(caretIndex, "\t");
+
+                // 삽입 후 커서 위치를 조정합니다.
+                CodeTextBox.CaretIndex = caretIndex + 1;
+
+                // Tab 키 입력 이벤트를 처리하고 더 이상 전파되지 않도록 합니다.
+                e.Handled = true;
+            }
+        }
+
+
+
+
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {

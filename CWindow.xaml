@@ -93,7 +93,17 @@
                         Foreground="White" BorderThickness="0,2,0,0" BorderBrush="#FFC7C5C5" Click="FileButton_Click"/>
                 </StackPanel>
                 <Border x:Name="TextBoxBorder" Grid.Row="1" BorderBrush="White" BorderThickness="0.5" Margin="1">
-                    <TextBox x:Name="CodeTextBox" TextWrapping="Wrap" AcceptsReturn="True" Background="{x:Null}" BorderBrush="{x:Null}" VerticalScrollBarVisibility="Auto" TextChanged="CodeTextBox_TextChanged" Padding="5" Foreground="White" FontSize="20"/>
+                    <TextBox x:Name="CodeTextBox" 
+         TextWrapping="Wrap" 
+         AcceptsReturn="True" 
+         Background="{x:Null}" 
+         BorderBrush="{x:Null}" 
+         VerticalScrollBarVisibility="Auto" 
+         TextChanged="CodeTextBox_TextChanged" 
+         Padding="5" 
+         Foreground="White" 
+         FontSize="20"
+         PreviewKeyDown="CodeTextBox_PreviewKeyDown"/>
                 </Border>
                 <Border Grid.Row="2" BorderBrush="White" BorderThickness="0.5" Margin="1">
                     <Grid>
