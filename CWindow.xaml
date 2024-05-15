@@ -74,7 +74,15 @@
             </Border>
             <!--<Label x:Name="NotificationBar" DockPanel.Dock="Bottom" Content="대기" Background="#FF484848" Height="30" FontSize="18" Padding="8,0,0,0" VerticalContentAlignment="Center" Foreground="White" />-->
             <Border DockPanel.Dock="Left" Width="200" BorderBrush="White" BorderThickness="0.5" Margin="1">
-                <Label x:Name="LeftLabel" Content="File Explorer" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Background="{x:Null}"/>
+                <Grid>
+                    <TreeView Name="folderTreeView" Margin="5" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding SubItems}">
+                                <TextBlock Text="{Binding Name}" MouseLeftButtonDown="ItemMouseLeftButtonDown" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                </Grid>
             </Border>
             <Grid DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>

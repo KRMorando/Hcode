@@ -8,6 +8,13 @@ using Microsoft.Win32;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
+using System.Windows.Forms;
+using Button = System.Windows.Controls.Button;
+using TextBox = System.Windows.Controls.TextBox;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using MessageBox = System.Windows.MessageBox;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace Hcode
 {
@@ -31,6 +38,7 @@ namespace Hcode
         public CWindow(string selectLanguage, string fileName)
         {
             this.InitializeComponent();
+            LoadFolderStructure(folderPath);
 
             fileNames.Add(fileName);
             textBoxes.Add(CodeTextBox);
@@ -53,6 +61,108 @@ namespace Hcode
         private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
+        }
+
+        private void LoadFolderStructure(string rootPath)
+        {
+            if (!Directory.Exists(rootPath))
+            {
+                MessageBox.Show("폴더를 찾을 수 없습니다.");
+                return;
+            }
+
+            FolderItem rootFolder = new FolderItem(Path.GetFileName(rootPath));
+            LoadSubItems(rootPath, rootFolder);
+
+            folderTreeView.ItemsSource = new ObservableCollection<FolderItem> { rootFolder };
+        }
+
+        private void LoadSubItems(string folderPath, FolderItem parentFolder)
+        {
+            try
+            {
+                string[] subDirectories = Directory.GetDirectories(folderPath);
+                foreach (string subDir in subDirectories)
+                {
+                    FolderItem subFolder = new FolderItem(Path.GetFileName(subDir));
+                    parentFolder.SubItems.Add(subFolder);
+                    LoadSubItems(subDir, subFolder); // 하위 폴더 로드
+                }
+
+                string[] files = Directory.GetFiles(folderPath);
+                foreach (string file in files)
+                {
+                    FileItem fileItem = new FileItem(Path.GetFileName(file));
+                    parentFolder.SubItems.Add(fileItem);
+                }
+            } catch (UnauthorizedAccessException)
+            {
+                // 접근 권한이 없는 폴더는 무시
+            } catch (Exception ex)
+            {
+                MessageBox.Show($"오류 발생: {ex.Message}");
+            }
+        }
+
+        private void ItemMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock textBlock = sender as TextBlock;
+            String itemPath = testPath + "/" + textBlock.Text;
+            if (textBlock == null)
+                return;
+
+            String fileName = Path.GetFileNameWithoutExtension(itemPath);
+
+            Button newButton = new Button();
+            newButton.Content = fileName;
+            newButton.Margin = new Thickness(0, 0, 2, 0);
+            newButton.Width = 100;
+            newButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3E3E3E"));
+            newButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
+            newButton.Foreground = Brushes.White;
+            newButton.BorderThickness = new Thickness(0, 2, 0, 0);
+            newButton.Click += FileButton_Click;
+
+            TextBox newTextBox = new TextBox();
+            newTextBox.TextWrapping = TextWrapping.Wrap;
+            newTextBox.AcceptsReturn = true;
+            newTextBox.Background = null;
+            newTextBox.BorderBrush = null;
+            newTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            newTextBox.Padding = new Thickness(5);
+            newTextBox.Foreground = Brushes.White;
+            newTextBox.FontSize = 20;
+            newTextBox.TextChanged += CodeTextBox_TextChanged;
+            newTextBox.Text = File.ReadAllText(itemPath);
+
+            buttonPanel.Children.Add(newButton);
+            TextBoxBorder.Child = newTextBox;
+
+            DisabledComponent();
+
+            nowFile = fileName;
+            nowTextBox = newTextBox;
+            nowButton = newButton;
+
+            EnabledComponent();
+
+            fileNames.Add(nowFile);
+            textBoxes.Add(newTextBox);
+            fileButtons.Add(newButton);
+        }
+
+        private void DisabledComponent()
+        {
+            nowTextBox.Visibility = Visibility.Collapsed;
+            nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3E3E3E"));
+        }
+
+        private void EnabledComponent()
+        {
+            nowTextBox.Visibility = Visibility.Visible;
+            nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
+
+            TextBoxBorder.Child = nowTextBox;
         }
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
@@ -209,11 +319,6 @@ namespace Hcode
             }
         }
 
-
-
-
-
-
         private void CodeTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -261,7 +366,6 @@ namespace Hcode
             }
         }
 
-       
         private void ToMiniButton_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
@@ -362,23 +466,6 @@ namespace Hcode
         }
 
 
-       
-
-        private void DisabledComponent()
-        {
-            nowTextBox.Visibility = Visibility.Collapsed;
-            nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3E3E3E"));
-        }
-
-        private void EnabledComponent()
-        {
-            nowTextBox.Visibility = Visibility.Visible;
-            nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
-
-            TextBoxBorder.Child = nowTextBox;
-        }
-
-
         // 클랭-포맷을 활용한 들여쓰기
         private void IndentButton_Click(object sender, RoutedEventArgs e)
         {
@@ -448,10 +535,6 @@ namespace Hcode
                 e.Handled = true;
             }
         }
-
-
-
-
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
