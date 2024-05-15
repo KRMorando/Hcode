@@ -6,6 +6,29 @@
         xmlns:local="clr-namespace:Hcode"
         mc:Ignorable="d"
         Height="450" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="None" Foreground="{x:Null}" Background="{x:Null}" AllowsTransparency="True">
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Style.Triggers>
+                <!-- 버튼이 활성화 상태이고 마우스를 버튼 위로 올릴 때 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True"/>
+                        <Condition Property="IsEnabled" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="#FF2F2F2F"/>
+                </MultiTrigger>
+                <!-- 버튼이 활성화 상태이고 마우스가 버튼 위에서 내려갈 때 -->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="False"/>
+                        <Condition Property="IsEnabled" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{x:Null}"/>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Border
         Margin="5"
         BorderBrush="Gray"

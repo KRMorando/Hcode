@@ -25,28 +25,23 @@
                         <Image Source="Resources/Run.png"/>
                     </Button>
                     <Menu DockPanel.Dock="Left" Foreground="White" Background="{x:Null}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalAlignment="Center">
-                        <MenuItem Header="_파일" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-                            <MenuItem Header="_새로 만들기" Foreground="White" Background="#FF3E3E3E" Click="OnClickCButton"/>
-                            <MenuItem Header="_열기" Click="OpenFileButton_Click" Foreground="White" Background="#FF3E3E3E"/>
-                            <MenuItem Header="_저장" Click="SaveMenuItem_Click" Foreground="White" Background="#FF3E3E3E"/>
-
-                            <MenuItem Header="_현재 파일 닫기" Foreground="White" Background="#FF3E3E3E"/>
+                        <MenuItem Header="_파일" BorderBrush="{x:Null}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="{x:Null}">
+                            <MenuItem Header="_새로 만들기" Foreground="White" Background="#FF373434" Click="OnClickCButton" BorderBrush="{x:Null}"/>
+                            <MenuItem Header="_열기" Click="OpenFileButton_Click" Foreground="White" Background="#FF373434" BorderBrush="{x:Null}"/>
+                            <MenuItem Header="_저장" Click="SaveMenuItem_Click" Foreground="White" Background="#FF373434" BorderBrush="{x:Null}"/>
+                            <MenuItem Header="_현재 파일 닫기" Foreground="White" Background="#FF373434"/>
                         </MenuItem>
-
-                        <MenuItem Header="_옵션" Margin="1">
-
+                        <MenuItem Header="_옵션" Margin="1" BorderBrush="{x:Null}" Background="{x:Null}">
                         </MenuItem>
-                        <MenuItem Header="_디버깅" Margin="1">
-                            <MenuItem Header="_디버그 하지 않고 실행" Foreground="White" Background="#FF3E3E3E" Click="CompileButton_Click"/>
+                        <MenuItem Header="_디버깅" Margin="1" BorderBrush="{x:Null}" Background="{x:Null}">
+                            <MenuItem Header="_디버그 하지 않고 실행" Foreground="White" Background="#FF373434" Click="CompileButton_Click" BorderBrush="{x:Null}"/>
                         </MenuItem>
-                        <MenuItem Header="_도움말" Margin="1">
-                            <MenuItem Header="_도움말" Margin="1" Foreground="White" Background="#FF3E3E3E" Click="HelpButton_Click">
+                        <MenuItem Header="_도움말" Margin="1" BorderBrush="{x:Null}" Background="{x:Null}">
+                            <MenuItem Header="_도움말" Margin="1" Foreground="White" Background="#FF373434" Click="HelpButton_Click">
                             </MenuItem>
-
                         </MenuItem>
                         <MenuItem Header="코딩 지원" Margin="1" Click="IndentButton_Click" Foreground="lightgreen" >
                         </MenuItem>
-                        
                     </Menu>
                     <Grid DockPanel.Dock="Right" Width="90">
                         <Grid.ColumnDefinitions>
@@ -66,19 +61,18 @@
                         <Button Grid.Column="2" Style="{DynamicResource SystemButton}"
                         x:Name="CloseButton"
                         Content="r" Click="CloseButton_Click"/>
-                        
                     </Grid>
-                    <!--<Label x:Name="FileName_Label" DockPanel.Dock="Right" Width="80" Content="파일명" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" BorderBrush="{Binding ElementName=border, Mode=OneWay}" FontSize="20"/>-->
-                    <Label DockPanel.Dock="Top" Content="Hcode" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF52DA23" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <Label x:Name="FileName_Label" DockPanel.Dock="Right" Width="80" Content="파일명" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" BorderBrush="{Binding ElementName=border, Mode=OneWay}" FontSize="20"/>
+                    <Label Content="Hcode" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF52DA23" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                 </DockPanel>
             </Border>
             <!--<Label x:Name="NotificationBar" DockPanel.Dock="Bottom" Content="대기" Background="#FF484848" Height="30" FontSize="18" Padding="8,0,0,0" VerticalContentAlignment="Center" Foreground="White" />-->
-            <Border DockPanel.Dock="Left" Width="200" BorderBrush="White" BorderThickness="0.5" Margin="1">
+            <Border DockPanel.Dock="Left" Width="300" BorderBrush="White" BorderThickness="0.5" Margin="1">
                 <Grid>
                     <TreeView Name="folderTreeView" Margin="5" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding SubItems}">
-                                <TextBlock Text="{Binding Name}" MouseLeftButtonDown="ItemMouseLeftButtonDown" Foreground="White"/>
+                                <TextBlock Text="{Binding Name}" MouseLeftButtonDown="ItemMouseLeftButtonDown" Foreground="White" FontSize="20"/>
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
@@ -89,31 +83,23 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0.2*"/>
-                    <RowDefinition Height="6.8*"/>
+                    <RowDefinition Height="7*"/>
                     <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
-                <StackPanel x:Name="buttonPanel" Grid.Row="0" Orientation="Horizontal" Margin="1,0,0,0">
-                    <Button
-                        x:Name="fileButton0"
-                        Content="파일명" Margin="0,0,2,0"
-                        Width="100" Background="#FF3E3E3E"
-                        Foreground="White" BorderThickness="0,2,0,0" BorderBrush="#FFC7C5C5" Click="FileButton_Click"/>
-                </StackPanel>
-                <Border x:Name="TextBoxBorder" Grid.Row="1" BorderBrush="White" BorderThickness="0.5" Margin="1">
+                <Border x:Name="TextBoxBorder" Grid.Row="0" BorderBrush="White" BorderThickness="0.5" Margin="1">
                     <TextBox x:Name="CodeTextBox" 
-         TextWrapping="Wrap" 
-         AcceptsReturn="True" 
-         Background="{x:Null}" 
-         BorderBrush="{x:Null}" 
-         VerticalScrollBarVisibility="Auto" 
-         TextChanged="CodeTextBox_TextChanged" 
-         Padding="5" 
-         Foreground="White" 
-         FontSize="20"
-         PreviewKeyDown="CodeTextBox_PreviewKeyDown"/>
+                        TextWrapping="Wrap" 
+                        AcceptsReturn="True" 
+                        Background="{x:Null}" 
+                        BorderBrush="{x:Null}" 
+                        VerticalScrollBarVisibility="Auto" 
+                        TextChanged="CodeTextBox_TextChanged" 
+                        Padding="5" 
+                        Foreground="White" 
+                        FontSize="20"
+                        PreviewKeyDown="CodeTextBox_PreviewKeyDown"/>
                 </Border>
-                <Border Grid.Row="2" BorderBrush="White" BorderThickness="0.5" Margin="1">
+                <Border Grid.Row="1" BorderBrush="White" BorderThickness="0.5" Margin="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>

@@ -4,58 +4,44 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Win32;
 using System.Windows.Input;
-using System.Collections.Generic;
-using System.Windows.Media;
 using System.Collections.ObjectModel;
-using System.Windows.Forms;
-using Button = System.Windows.Controls.Button;
-using TextBox = System.Windows.Controls.TextBox;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using MessageBox = System.Windows.MessageBox;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using Microsoft.Win32;
 
 namespace Hcode
 {
     public partial class CWindow : Window
     {
-        // Hcode 폴더 경로 불러오는곳
-        private static string folderPath = "C:/Hcode";
-        private static string testPath = folderPath + "/test";
-        private static DirectoryInfo directoryInfoPath = new DirectoryInfo(testPath);
+        // Hcode 폴더 경로 불러오기
+        static string folderPath = "C:/Hcode";
+        static string projectPath = folderPath + "/Project";
+        static string userPath = folderPath + "/UserSetting";
 
-        private List<string> fileNames = new List<string>();
-        private List<TextBox> textBoxes = new List<TextBox>();
-        private List<Button> fileButtons = new List<Button>();
+        string userProjectPath;
 
-        private string nowFile;
-        private TextBox nowTextBox;
-        private Button nowButton;
-
-        private bool isFirst = true;
+        DirectoryInfo projectInfoPath = new DirectoryInfo(projectPath);
+        DirectoryInfo userInfoPath = new DirectoryInfo(userPath);
 
         public CWindow(string selectLanguage, string fileName)
         {
             this.InitializeComponent();
+
+            //파일명 라벨 설정 및 UserProject 경로 지정
+            FileName_Label.Content = fileName;
+            userProjectPath = projectPath + "/" + fileName;
+
+            //트리 형식 구성
             LoadFolderStructure(folderPath);
 
-            fileNames.Add(fileName);
-            textBoxes.Add(CodeTextBox);
-            fileButtons.Add(fileButton0);
-
-            nowFile = fileName;
-            nowTextBox = CodeTextBox;
-            nowButton = fileButton0;
-
-            fileButton0.Content = fileName;
-
+            //작업 표시줄에 맞춰 최소/대 사이즈 조정
             this.MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
             this.MinHeight = 900;
             this.MaxHeight = SystemParameters.WorkArea.Height;
 
-            this.MouseLeftButtonDown += new MouseButtonEventHandler(MainWindow_MouseLeftButtonDown);
             // CodeTextBox의 TextChanged 이벤트에 CodeTextBox_TextChanged 메서드를 연결
+            this.MouseLeftButtonDown += new MouseButtonEventHandler(MainWindow_MouseLeftButtonDown);
+
+            Console.WriteLine("User: " + userProjectPath);
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -107,68 +93,18 @@ namespace Hcode
         private void ItemMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             TextBlock textBlock = sender as TextBlock;
-            String itemPath = testPath + "/" + textBlock.Text;
-            if (textBlock == null)
+            String itemPath = projectPath + "/" + Path.GetFileNameWithoutExtension(textBlock.Text);
+            if (textBlock == null || !(textBlock.Text.Split('.')[textBlock.Text.Split('.').Length - 1].Equals("c")))
                 return;
 
-            String fileName = Path.GetFileNameWithoutExtension(itemPath);
-
-            Button newButton = new Button();
-            newButton.Content = fileName;
-            newButton.Margin = new Thickness(0, 0, 2, 0);
-            newButton.Width = 100;
-            newButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3E3E3E"));
-            newButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
-            newButton.Foreground = Brushes.White;
-            newButton.BorderThickness = new Thickness(0, 2, 0, 0);
-            newButton.Click += FileButton_Click;
-
-            TextBox newTextBox = new TextBox();
-            newTextBox.TextWrapping = TextWrapping.Wrap;
-            newTextBox.AcceptsReturn = true;
-            newTextBox.Background = null;
-            newTextBox.BorderBrush = null;
-            newTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            newTextBox.Padding = new Thickness(5);
-            newTextBox.Foreground = Brushes.White;
-            newTextBox.FontSize = 20;
-            newTextBox.TextChanged += CodeTextBox_TextChanged;
-            newTextBox.Text = File.ReadAllText(itemPath);
-
-            buttonPanel.Children.Add(newButton);
-            TextBoxBorder.Child = newTextBox;
-
-            DisabledComponent();
-
-            nowFile = fileName;
-            nowTextBox = newTextBox;
-            nowButton = newButton;
-
-            EnabledComponent();
-
-            fileNames.Add(nowFile);
-            textBoxes.Add(newTextBox);
-            fileButtons.Add(newButton);
-        }
-
-        private void DisabledComponent()
-        {
-            nowTextBox.Visibility = Visibility.Collapsed;
-            nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3E3E3E"));
-        }
-
-        private void EnabledComponent()
-        {
-            nowTextBox.Visibility = Visibility.Visible;
-            nowButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
-
-            TextBoxBorder.Child = nowTextBox;
+            FileName_Label.Content = Path.GetFileNameWithoutExtension(textBlock.Text);
+            CodeTextBox.Text = File.ReadAllText(itemPath + "/" + textBlock.Text);
         }
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
         {
             // 사용자가 입력한 파일명을 가져옵니다.
-            string fileName = nowFile;
+            string fileName = FileName_Label.Content.ToString();
 
             // 파일명이 null이거나 빈 문자열인지 확인합니다.
             if (string.IsNullOrEmpty(fileName))
@@ -178,10 +114,10 @@ namespace Hcode
             }
 
             // 파일 내용을 가져옵니다.
-            string sourceCode = nowTextBox.Text;
+            string sourceCode = CodeTextBox.Text;
 
             // 파일 경로
-            string cFile = Path.Combine(testPath, $"{fileName}.c");
+            string cFile = Path.Combine(userProjectPath, $"{fileName}.c");
 
             try
             {
@@ -192,7 +128,7 @@ namespace Hcode
                 string input = "5"; // Example input value
 
                 // 컴파일된 프로그램이 저장될 .exe 파일 경로
-                string exeFile = Path.Combine(testPath, $"{fileName}.exe");
+                string exeFile = Path.Combine(userProjectPath, $"{fileName}.exe");
 
                 // 컴파일러 실행
                 ProcessStartInfo psi = new ProcessStartInfo
@@ -234,7 +170,7 @@ namespace Hcode
                             ProcessStartInfo psi2 = new ProcessStartInfo
                             {
                                 FileName = "cmd.exe",
-                                Arguments = $"/k echo off & echo \"{testPath}\" && \"{exeFile}\"",
+                                Arguments = $"/k echo off & echo \"{userProjectPath}\" && \"{exeFile}\"",
                                 UseShellExecute = false,
                                 CreateNoWindow = false
                             };
@@ -254,6 +190,8 @@ namespace Hcode
                 // 파일 저장 중 오류가 발생한 경우 오류 메시지를 표시합니다.
                 OutputTextBox.Text = $"파일 저장 중 오류가 발생했습니다: {ex.Message}";
             }
+            //트리 뷰 새로고침
+            LoadFolderStructure(folderPath);
         }
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
@@ -263,58 +201,12 @@ namespace Hcode
             if (openFileDialog.ShowDialog() == true)
             {
                 String fileName = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
-                bool isChecked = false;
-                for (int i = 0; i < fileNames.Count; i++)
+                if (fileName.Equals(FileName_Label.Content.ToString()))
+                    return;
+                else
                 {
-                    if (fileNames[i].Equals(fileName))
-                    {
-                        DisabledComponent();
-
-                        nowFile = fileNames[i];
-                        nowTextBox = textBoxes[i];
-                        nowButton = fileButtons[i];
-
-                        EnabledComponent();
-                        isChecked = true;
-                        break;
-                    }
-                }
-                if (!isChecked)
-                {
-                    Button newButton = new Button();
-                    newButton.Content = fileName;
-                    newButton.Margin = new Thickness(0, 0, 2, 0);
-                    newButton.Width = 100;
-                    newButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF3E3E3E"));
-                    newButton.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC7C5C5"));
-                    newButton.Foreground = Brushes.White;
-                    newButton.BorderThickness = new Thickness(0, 2, 0, 0);
-                    newButton.Click += FileButton_Click;
-
-                    TextBox newTextBox = new TextBox();
-                    newTextBox.TextWrapping = TextWrapping.Wrap;
-                    newTextBox.AcceptsReturn = true;
-                    newTextBox.Background = null;
-                    newTextBox.BorderBrush = null;
-                    newTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-                    newTextBox.Padding = new Thickness(5);
-                    newTextBox.Foreground = Brushes.White;
-                    newTextBox.FontSize = 20;
-                    newTextBox.TextChanged += CodeTextBox_TextChanged;
-                    newTextBox.Text = File.ReadAllText(openFileDialog.FileName);
-                    
-                    buttonPanel.Children.Add(newButton);
-                    TextBoxBorder.Child = newTextBox;
-
-                    DisabledComponent();
-
-                    nowFile = fileName;
-                    nowTextBox = newTextBox;
-                    nowButton = newButton;
-
-                    fileNames.Add(nowFile);
-                    textBoxes.Add(newTextBox);
-                    fileButtons.Add(newButton);
+                    FileName_Label.Content = openFileDialog.FileName;
+                    CodeTextBox.Text = File.ReadAllText(openFileDialog.FileName);
                 }
             }
         }
@@ -366,83 +258,19 @@ namespace Hcode
             }
         }
 
-        private void ToMiniButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
-        private void SizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.WindowState == WindowState.Maximized)
-            {
-                this.ResizeMode = ResizeMode.CanResize;
-                this.WindowState = WindowState.Normal;
-                SizeButton.Content = "1";
-                ShadowBorder.Margin = new Thickness(5);
-            }
-            else if (this.WindowState == WindowState.Normal)
-            {
-                this.ResizeMode = ResizeMode.NoResize;
-                this.WindowState = WindowState.Maximized;
-                SizeButton.Content = "2";
-                ShadowBorder.Margin = new Thickness(0);
-            }
-        }
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void FileButton_Click(object sender, RoutedEventArgs e)
-        {
-            Button clickedButton = sender as Button;
-            string fileName = clickedButton.Content.ToString();
-            for (int i = 0; i < fileNames.Count; i++)
-            {
-                if (fileNames[i].Equals(fileName))
-                {
-                    DisabledComponent();
-
-                    nowFile = fileNames[i];
-                    nowTextBox = textBoxes[i];
-                    nowButton = fileButtons[i];
-
-                    EnabledComponent();
-                }
-            }
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
-            // 파일 이름.c 경로
-            string cFile = testPath + "/" + nowFile + ".c";
-            string sourceCode = nowTextBox.Text;
-
-
-            // .c 파일에 소스 코드 작성
-            File.WriteAllText(cFile, sourceCode);
-        }
-
 
         private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            // 파일명이 null이거나 빈 문자열인지 확인합니다.
-            if (string.IsNullOrEmpty(nowFile))
-            {
-                MessageBox.Show("파일명을 입력하세요.", "경고", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
             // 파일 내용을 가져옵니다.
-            string code = nowTextBox.Text;
+            string code = CodeTextBox.Text;
 
             try
             {
                 // 파일을 저장할 경로를 지정합니다.
-                string filePath = Path.Combine(testPath, $"{nowFile}.c");
+                string cFile = userProjectPath + "/" + FileName_Label.Content.ToString() + ".c";
 
                 // 파일을 저장합니다.
-                File.WriteAllText(filePath, code);
+                File.WriteAllText(cFile, code);
 
                 // 성공적으로 저장되었다는 메시지를 표시합니다.
                 MessageBox.Show("파일이 성공적으로 저장되었습니다.", "알림", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -451,6 +279,9 @@ namespace Hcode
                 // 파일 저장 중 오류가 발생한 경우 오류 메시지를 표시합니다.
                 MessageBox.Show($"파일 저장 중 오류가 발생했습니다: {ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            //트리 뷰 새로고침
+            LoadFolderStructure(folderPath);
         }
 
         private void OnClickCButton(object sender, RoutedEventArgs e)
@@ -465,11 +296,10 @@ namespace Hcode
             HelpWindow.Show();
         }
 
-
         // 클랭-포맷을 활용한 들여쓰기
         private void IndentButton_Click(object sender, RoutedEventArgs e)
         {
-            string code = nowTextBox.Text;
+            string code = CodeTextBox.Text;
 
             ProcessStartInfo psi = new ProcessStartInfo
             {
@@ -513,7 +343,7 @@ namespace Hcode
                     process.WaitForExit();
 
                     // 들여쓴 코드를 텍스트 상자에 설정합니다.
-                    nowTextBox.Text = formattedCode;
+                    CodeTextBox.Text = formattedCode;
                 }
             }
         }
@@ -536,9 +366,31 @@ namespace Hcode
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void ToMiniButton_Click(object sender, RoutedEventArgs e)
         {
+            this.WindowState = WindowState.Minimized;
+        }
 
+        private void SizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
+            {
+                this.ResizeMode = ResizeMode.CanResize;
+                this.WindowState = WindowState.Normal;
+                SizeButton.Content = "1";
+                ShadowBorder.Margin = new Thickness(5);
+            }
+            else if (this.WindowState == WindowState.Normal)
+            {
+                this.ResizeMode = ResizeMode.NoResize;
+                this.WindowState = WindowState.Maximized;
+                SizeButton.Content = "2";
+                ShadowBorder.Margin = new Thickness(0);
+            }
+        }
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

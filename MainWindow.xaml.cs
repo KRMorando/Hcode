@@ -1,24 +1,27 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Input;
-//29차 커밋
+//30차 커밋
 
 namespace Hcode
 {
-
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             // Hcode 폴더 경로 불러오기
             string folderPath = "C:/Hcode";
-            string testPath = folderPath + "/test";
+            string projectPath = folderPath + "/Project";
+            string userPath = folderPath + "/UserSetting";
 
-            DirectoryInfo directoryInfoPath = new DirectoryInfo(testPath);
+            DirectoryInfo projectInfoPath = new DirectoryInfo(projectPath);
+            DirectoryInfo userInfoPath = new DirectoryInfo(userPath);
 
-            // 폴더 유/무 체크
-            if (!directoryInfoPath.Exists)
-                directoryInfoPath.Create();
+            // 폴더 유/무 체크, 없을 시 생성
+            if (!projectInfoPath.Exists)
+                projectInfoPath.Create();
+            if (!userInfoPath.Exists)
+                userInfoPath.Create();
 
             InitializeComponent();
             this.MouseLeftButtonDown += new MouseButtonEventHandler(MainWindow_MouseLeftButtonDown);
