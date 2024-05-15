@@ -78,7 +78,7 @@
                     <TreeView Name="folderTreeView" Margin="5" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding SubItems}">
-                                <TextBlock Text="{Binding Name}" MouseLeftButtonDown="ItemMouseLeftButtonDown" />
+                                <TextBlock Text="{Binding Name}" MouseLeftButtonDown="ItemMouseLeftButtonDown" Foreground="White"/>
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
