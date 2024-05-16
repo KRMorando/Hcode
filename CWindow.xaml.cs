@@ -7,6 +7,11 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
+using System.Windows.Documents;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
+using System.Collections.Generic;
 
 namespace Hcode
 {
@@ -81,10 +86,12 @@ namespace Hcode
                     FileItem fileItem = new FileItem(Path.GetFileName(file));
                     parentFolder.SubItems.Add(fileItem);
                 }
-            } catch (UnauthorizedAccessException)
+            }
+            catch (UnauthorizedAccessException)
             {
                 // 접근 권한이 없는 폴더는 무시
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show($"오류 발생: {ex.Message}");
             }
@@ -185,7 +192,8 @@ namespace Hcode
                         }
                     }
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 // 파일 저장 중 오류가 발생한 경우 오류 메시지를 표시합니다.
                 OutputTextBox.Text = $"파일 저장 중 오류가 발생했습니다: {ex.Message}";
@@ -211,11 +219,67 @@ namespace Hcode
             }
         }
 
+        private void TextScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange != 0)
+            {
+                HighlightScrollViewer.ScrollToVerticalOffset(TextScrollViewer.VerticalOffset);
+            }
+        }
+
+
+        private bool isTextChanging = false;
+
         private void CodeTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
             if (textBox == null)
                 return;
+
+            if (isTextChanging)
+                return;
+
+            isTextChanging = true;
+
+            string text = textBox.Text;
+            HighlightedTextBlock.Inlines.Clear();
+
+            var patterns = new Dictionary<string, Brush>
+    {
+        { @"\bint\b", Brushes.Blue },
+        { @"#include", new SolidColorBrush(Color.FromRgb(144, 238, 144)) }, // 연한 초록색
+        { @"<stdio\.h>", new SolidColorBrush(Color.FromRgb(186, 85, 211)) } // 연한 보라색
+    };
+
+            int lastIndex = 0;
+            var allMatches = new List<Match>();
+            foreach (var pattern in patterns)
+            {
+                var matches = Regex.Matches(text, pattern.Key);
+                allMatches.AddRange(matches.Cast<Match>());
+            }
+
+            allMatches = allMatches.OrderBy(m => m.Index).ToList();
+            foreach (var match in allMatches)
+            {
+                if (match.Index > lastIndex)
+                {
+                    HighlightedTextBlock.Inlines.Add(new Run(text.Substring(lastIndex, match.Index - lastIndex)));
+                }
+
+                Run run = new Run(match.Value);
+                run.Foreground = patterns.First(p => Regex.IsMatch(match.Value, p.Key)).Value;
+                HighlightedTextBlock.Inlines.Add(run);
+
+                lastIndex = match.Index + match.Length;
+            }
+
+            if (lastIndex < text.Length)
+            {
+                HighlightedTextBlock.Inlines.Add(new Run(text.Substring(lastIndex)));
+            }
+
+            isTextChanging = false;
 
             foreach (TextChange change in e.Changes)
             {
@@ -223,7 +287,6 @@ namespace Hcode
                 int addedLength = change.AddedLength;
                 string addedText = textBox.Text.Substring(offset, addedLength);
                 int caretIndex2 = textBox.CaretIndex;
-                string text = textBox.Text;
 
                 // 새로 추가된 문자가 괄호나 따옴표인지 확인합니다.
                 if (addedText == "{" || addedText == "(" || addedText == "[" || addedText == "'" || addedText == "\"")
@@ -254,9 +317,10 @@ namespace Hcode
                         }
                     }
                 }
-               
             }
         }
+
+
 
 
         private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
@@ -274,7 +338,8 @@ namespace Hcode
 
                 // 성공적으로 저장되었다는 메시지를 표시합니다.
                 MessageBox.Show("파일이 성공적으로 저장되었습니다.", "알림", MessageBoxButton.OK, MessageBoxImage.Information);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 // 파일 저장 중 오류가 발생한 경우 오류 메시지를 표시합니다.
                 MessageBox.Show($"파일 저장 중 오류가 발생했습니다: {ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -350,7 +415,11 @@ namespace Hcode
 
         private void CodeTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Tab)
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = false; // 기본 Enter 키 동작을 허용
+            }
+            else if (e.Key == Key.Tab)
             {
                 // 현재 커서 위치를 가져옵니다.
                 int caretIndex = CodeTextBox.CaretIndex;
@@ -365,6 +434,7 @@ namespace Hcode
                 e.Handled = true;
             }
         }
+
 
         private void ToMiniButton_Click(object sender, RoutedEventArgs e)
         {
