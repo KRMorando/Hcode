@@ -46,8 +46,6 @@ namespace Hcode
 
             // CodeTextBox의 TextChanged 이벤트에 CodeTextBox_TextChanged 메서드를 연결
             this.MouseLeftButtonDown += new MouseButtonEventHandler(MainWindow_MouseLeftButtonDown);
-
-            Console.WriteLine("User: " + userProjectPath);
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -109,10 +107,10 @@ namespace Hcode
             string cFile = userProjectPath + "/" + FileName_Label.Content.ToString() + ".c";
             File.WriteAllText(cFile, CodeTextBox.Text);
 
-            FileName_Label.Content = Path.GetFileNameWithoutExtension(textBlock.Text);
+            FileName_Label.Content = textBlock.Text.Split('.')[0];
             CodeTextBox.Text = File.ReadAllText(itemPath + "/" + textBlock.Text);
 
-            userProjectPath = projectPath + "/" + textBlock.Text;
+            userProjectPath = projectPath + "/" + Path.GetFileNameWithoutExtension(textBlock.Text);
         }
 
         //private void OpenFileMenuItem_Click(object sender, RoutedEventArgs e)
@@ -242,7 +240,7 @@ namespace Hcode
                     FileName_Label.Content = openFileDialog.FileName;
                     CodeTextBox.Text = File.ReadAllText(openFileDialog.FileName);
 
-                    userProjectPath = projectPath + "/" + openFileDialog.FileName;
+                    userProjectPath = projectPath + "/" + Path.GetFileNameWithoutExtension(openFileDialog.FileName);
                 }
             }
         }
