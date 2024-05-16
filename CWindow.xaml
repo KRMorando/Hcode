@@ -59,12 +59,7 @@
             </Border>
             <Border DockPanel.Dock="Left" Width="300" BorderBrush="White" BorderThickness="0.5" Margin="1">
                 <Grid>
-                    <TreeView Name="folderTreeView" Margin="5" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" MouseRightButtonDown="folderTreeView_MouseRightButtonDown">
-                        <TreeView.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="파일 생성" Click="MakeFileMenuItem_Click" />
-                            </ContextMenu>
-                        </TreeView.ContextMenu>
+                    <TreeView Name="folderTreeView" Margin="5" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding SubItems}">
                                 <TextBlock Text="{Binding Name}" MouseLeftButtonDown="ItemMouseLeftButtonDown" Foreground="White" FontSize="20"/>
