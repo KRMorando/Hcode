@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Collections.Generic;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace Hcode
 {
@@ -104,9 +105,34 @@ namespace Hcode
             if (textBlock == null || !(textBlock.Text.Split('.')[textBlock.Text.Split('.').Length - 1].Equals("c")))
                 return;
 
+            // 이전 파일을 저장합니다.
+            string cFile = userProjectPath + "/" + FileName_Label.Content.ToString() + ".c";
+            File.WriteAllText(cFile, CodeTextBox.Text);
+
             FileName_Label.Content = Path.GetFileNameWithoutExtension(textBlock.Text);
             CodeTextBox.Text = File.ReadAllText(itemPath + "/" + textBlock.Text);
+
+            userProjectPath = projectPath + "/" + textBlock.Text;
         }
+
+        //private void OpenFileMenuItem_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (folderTreeView.SelectedItem != null && folderTreeView.SelectedItem is FileItem)
+        //    {
+        //        FileItem selectedItem = (FileItem)folderTreeView.SelectedItem;
+        //        string filePath = Path.Combine(projectPath + "/" + , selectedItem.Name); // 파일 경로 설정
+        //        Process.Start(filePath); // 파일 열기
+        //    }
+        //}
+
+        //private void folderTreeView_MouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //{
+        //    if (e.Source is FrameworkElement element)
+        //    {
+        //        element.Focus();
+        //        e.Handled = true;
+        //    }
+        //}
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -215,6 +241,8 @@ namespace Hcode
                 {
                     FileName_Label.Content = openFileDialog.FileName;
                     CodeTextBox.Text = File.ReadAllText(openFileDialog.FileName);
+
+                    userProjectPath = projectPath + "/" + openFileDialog.FileName;
                 }
             }
         }
