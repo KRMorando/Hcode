@@ -38,7 +38,7 @@
                         <MenuItem Header="_도움말" Margin="1" BorderBrush="{x:Null}" Background="{x:Null}">
                             <MenuItem Header="_도움말" Margin="1" Foreground="White" Background="#FF3E3E3E" Click="HelpButton_Click"/>
                         </MenuItem>
-                        <MenuItem Header="코딩 지원" Margin="1" Click="IndentButton_Click" Foreground="lightgreen"/>
+                        <MenuItem Header="ㅋㅋ" Margin="1" Click="IndentButton_Click" Foreground="lightgreen"/>
                     </Menu>
                     <Grid DockPanel.Dock="Right" Width="90">
                         <Grid.ColumnDefinitions>

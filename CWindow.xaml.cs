@@ -272,9 +272,38 @@ namespace Hcode
 
             var patterns = new Dictionary<string, Brush>
     {
-        { @"\bint\b", Brushes.Blue },
-        { @"#include", new SolidColorBrush(Color.FromRgb(144, 238, 144)) }, // 연한 초록색
-        { @"<stdio\.h>", new SolidColorBrush(Color.FromRgb(186, 85, 211)) } // 연한 보라색
+         { @"#define", new SolidColorBrush(Color.FromRgb(61, 189, 61)) }, // 진한 초록색
+        { @"#include", new SolidColorBrush(Color.FromRgb(61, 189, 61)) },
+
+        { @"\bprintf\b", new SolidColorBrush(Color.FromRgb(255, 165, 0)) }, // 연한 주황색
+
+        { @"\bif\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) }, // 연한 분홍색
+        { @"\belse\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+        { @"\bwhile\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+        { @"\bfor\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+        { @"\bswitch\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+        { @"\bcase\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+        { @"\bbreak\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+        { @"\bcontinue\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+        { @"\bdo\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+        { @"\bgoto\b", new SolidColorBrush(Color.FromRgb(243, 176, 195)) },
+
+        { @"\bint\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) }, // 파랑
+        { @"\bconst\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bstatic\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bextern\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bstruct\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bunion\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\btypedef\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\benum\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bsizeof\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bchar\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bdouble\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bfloat\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bvoid\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bshort\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\blong\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
+        { @"\bunsigned\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) }
     };
 
             int lastIndex = 0;
