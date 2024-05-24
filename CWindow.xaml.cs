@@ -12,7 +12,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Collections.Generic;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace Hcode
 {
@@ -344,12 +343,12 @@ namespace Hcode
                 int caretIndex2 = textBox.CaretIndex;
 
                 // 새로 추가된 문자가 괄호나 따옴표인지 확인합니다.
-                if (addedText == "{" || addedText == "(" || addedText == "[" || addedText == "'" || addedText == "\"")
+                if (addedText == "<" || addedText == "(" || addedText == "[" || addedText == "'" || addedText == "\"")
                 {
                     // 현재 커서 위치를 저장합니다.
                     int caretIndex = textBox.CaretIndex;
                     // 추가된 문자가 여는 괄호나 따옴표일 경우에는 그에 해당하는 닫는 괄호나 따옴표를 추가하고 커서를 원래 위치로 되돌립니다.
-                    string closingBracket = addedText == "{" ? "}" : (addedText == "(" ? ")" : (addedText == "[" ? "]" : (addedText == "'" ? "'" : "\"")));
+                    string closingBracket = addedText == "<" ? ">" : (addedText == "(" ? ")" : (addedText == "[" ? "]" : (addedText == "'" ? "'" : "\"")));
                     if (offset + addedLength < textBox.Text.Length && textBox.Text[offset + addedLength] == closingBracket[0])
                     {
                         // 이미 같은 종류의 괄호가 입력된 경우에는 추가하지 않습니다.
