@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Collections.Generic;
 
+
 namespace Hcode
 {
     public partial class CWindow : Window
@@ -30,6 +31,8 @@ namespace Hcode
         public CWindow(string selectLanguage, string fileName)
         {
             this.InitializeComponent();
+            CodeTextBox.PreviewKeyDown += CodeTextBox_PreviewKeyDown;
+            CodeTextBox.PreviewTextInput += CodeTextBox_PreviewTextInput;
 
             //파일명 라벨 설정 및 UserProject 경로 지정
             FileName_Label.Content = fileName;
@@ -377,6 +380,67 @@ namespace Hcode
 
 
 
+
+
+
+
+
+        private void CodeTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                int caretIndex = CodeTextBox.CaretIndex;
+                string textBeforeCaret = CodeTextBox.Text.Substring(0, caretIndex);
+                int braceCount = textBeforeCaret.Count(c => c == '{') - textBeforeCaret.Count(c => c == '}');
+
+                if (braceCount > 0)
+                {
+                    string indentation = new string('\t', braceCount);
+                    CodeTextBox.SelectedText = "\n" + indentation;
+                    CodeTextBox.CaretIndex = caretIndex + 1 + indentation.Length;
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.Tab)
+            {
+                int caretIndex = CodeTextBox.CaretIndex;
+                CodeTextBox.SelectedText = "\t";
+                CodeTextBox.CaretIndex = caretIndex + 1;
+                e.Handled = true;
+            }
+
+        }
+
+        private void CodeTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (e.Text == "{")
+            {
+                int caretIndex = CodeTextBox.CaretIndex;
+                string indentation = new string('\t', CodeTextBox.Text.Substring(0, caretIndex).Count(c => c == '{') - CodeTextBox.Text.Substring(0, caretIndex).Count(c => c == '}') + 1);
+                CodeTextBox.SelectedText = "{\n" + indentation + "\n" + new string('\t', indentation.Length - 1) + "}";
+                CodeTextBox.CaretIndex = caretIndex + 2 + indentation.Length;
+                e.Handled = true;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // 파일 내용을 가져옵니다.
@@ -467,27 +531,7 @@ namespace Hcode
             }
         }
 
-        private void CodeTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                e.Handled = false; // 기본 Enter 키 동작을 허용
-            }
-            else if (e.Key == Key.Tab)
-            {
-                // 현재 커서 위치를 가져옵니다.
-                int caretIndex = CodeTextBox.CaretIndex;
 
-                // 현재 커서 위치에 탭 문자를 삽입합니다.
-                CodeTextBox.Text = CodeTextBox.Text.Insert(caretIndex, "\t");
-
-                // 삽입 후 커서 위치를 조정합니다.
-                CodeTextBox.CaretIndex = caretIndex + 1;
-
-                // Tab 키 입력 이벤트를 처리하고 더 이상 전파되지 않도록 합니다.
-                e.Handled = true;
-            }
-        }
 
 
         private void ToMiniButton_Click(object sender, RoutedEventArgs e)
