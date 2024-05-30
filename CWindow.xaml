@@ -85,6 +85,7 @@
                                 Padding="5"
                                 Foreground="White"
                                 FontSize="20"
+								FontFamily="Consolas"									   
                                 Background="Transparent"/>
                         </ScrollViewer>
                         <ScrollViewer x:Name="TextScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ScrollChanged="TextScrollViewer_ScrollChanged">
@@ -99,6 +100,7 @@
                                 Padding="5"
                                 Foreground="Transparent"
                                 FontSize="20"
+								FontFamily="Consolas"
                                 PreviewKeyDown="CodeTextBox_PreviewKeyDown"/>
                         </ScrollViewer>
                     </Grid>
