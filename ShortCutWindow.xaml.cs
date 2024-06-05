@@ -29,10 +29,14 @@ namespace Hcode
             //프로젝트명 가져오기
             string fileName = FileName_TextBox.Text;
             DirectoryInfo newProjectInfoPath = new DirectoryInfo(projectPath + "/" + fileName);
+            FileInfo newFilePath = new FileInfo(projectPath + "/" + fileName + "/" + fileName + ".c");
 
             //해당 프로젝트 폴더 유무 체크 후 없을시 생성
             if (!newProjectInfoPath.Exists)
+            {
                 newProjectInfoPath.Create();
+                newFilePath.Create();
+            }
 
             //Window를 연다. !! 지금은 CWindow를 객체로 생성하는데 Java와 Python을 구현할땐 바꿔야한다 !!
             Window newWindow = new CWindow(selectLanguage, FileName_TextBox.Text);

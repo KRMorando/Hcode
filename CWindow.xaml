@@ -62,7 +62,10 @@
                     <TreeView Name="folderTreeView" Margin="5" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding SubItems}">
-                                <TextBlock Text="{Binding Name}" MouseLeftButtonDown="ItemMouseLeftButtonDown" Foreground="White" FontSize="20"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon}" Width="16" Height="16" Margin="0,0,5,0"/>
+                                    <TextBlock Text="{Binding Name}" MouseLeftButtonDown="ItemMouseLeftButtonDown" Foreground="White" FontSize="20"/>
+                                </StackPanel>
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>

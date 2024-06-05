@@ -77,6 +77,7 @@ namespace Hcode
                 foreach (string subDir in subDirectories)
                 {
                     FolderItem subFolder = new FolderItem(Path.GetFileName(subDir));
+                    subFolder.Icon = "Resources/folder.png";
                     parentFolder.SubItems.Add(subFolder);
                     LoadSubItems(subDir, subFolder); // 하위 폴더 로드
                 }
@@ -85,14 +86,13 @@ namespace Hcode
                 foreach (string file in files)
                 {
                     FileItem fileItem = new FileItem(Path.GetFileName(file));
+                    fileItem.Icon = "Resources/cFile.png";
                     parentFolder.SubItems.Add(fileItem);
                 }
-            }
-            catch (UnauthorizedAccessException)
+            } catch (UnauthorizedAccessException)
             {
                 // 접근 권한이 없는 폴더는 무시
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 MessageBox.Show($"오류 발생: {ex.Message}");
             }

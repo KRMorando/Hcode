@@ -1,10 +1,15 @@
 ﻿using System.Collections.ObjectModel;
+using System.Drawing;
 
 namespace Hcode
 {
     public class FolderItem
     {
         public string Name
+        {
+            get; set;
+        }
+        public string Icon
         {
             get; set;
         }
@@ -16,6 +21,7 @@ namespace Hcode
         public FolderItem(string name)
         {
             Name = name;
+            Icon = "Resources/folder.png";
             SubItems = new ObservableCollection<object>();
         }
     }
@@ -27,9 +33,15 @@ namespace Hcode
             get; set;
         }
 
+        public string Icon
+        {
+            get; set;
+        }
+
         public FileItem(string name)
         {
             Name = name;
+            Icon = "Resources/file.png";
         }
     }
 }
