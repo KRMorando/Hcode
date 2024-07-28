@@ -31,33 +31,36 @@
                             <MenuItem Header="_저장" Click="SaveMenuItem_Click" Foreground="White" Background="#FF3E3E3E" BorderBrush="{x:Null}"/>
                             <MenuItem Header="_현재 파일 닫기" Foreground="White" Background="#FF3E3E3E"/>
                         </MenuItem>
-                        <MenuItem Header="_옵션" Margin="1" BorderBrush="{x:Null}" Background="{x:Null}"/>
                         <MenuItem Header="_디버깅" Margin="1" BorderBrush="{x:Null}" Background="{x:Null}">
                             <MenuItem Header="_디버그 하지 않고 실행" Foreground="White" Background="#FF3E3E3E" Click="CompileButton_Click" BorderBrush="{x:Null}"/>
                         </MenuItem>
+                        <MenuItem Header="_설정" Margin="1" BorderBrush="{x:Null}" Background="{x:Null}" Click="OptionButton_Click"/>
                         <MenuItem Header="_도움말" Margin="1" BorderBrush="{x:Null}" Background="{x:Null}">
                             <MenuItem Header="_도움말" Margin="1" Foreground="White" Background="#FF3E3E3E" Click="HelpButton_Click"/>
                         </MenuItem>
                         <MenuItem Header="자동 들여쓰기" Margin="1" Click="IndentButton_Click" Foreground="lightgreen"/>
                     </Menu>
-                    <Grid DockPanel.Dock="Right" Width="90">
+                    <Grid DockPanel.Dock="Right" Width="300">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30"/>
-                            <ColumnDefinition Width="30"/>
-                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
-                        <Button Grid.Column="0" Style="{DynamicResource SystemButton}" x:Name="MinimizeButton" Content="0" Click="ToMiniButton_Click"/>
-                        <Button Grid.Column="1" Style="{DynamicResource SystemButton}" x:Name="SizeButton" Content="2" Click="SizeButton_Click"/>
-                        <Button Grid.Column="2" Style="{DynamicResource SystemButton}" x:Name="CloseButton" Content="r" Click="CloseButton_Click"/>
+                        <Label Grid.Column="0" x:Name="FileName_Label" DockPanel.Dock="Right" Content="파일명" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" BorderBrush="{Binding ElementName=border, Mode=OneWay}" FontSize="20"/>
+                        <Button Grid.Column="1" Style="{DynamicResource SystemButton}" x:Name="MinimizeButton" Content="0" Click="ToMiniButton_Click"/>
+                        <Button Grid.Column="2" Style="{DynamicResource SystemButton}" x:Name="SizeButton" Content="2" Click="SizeButton_Click"/>
+                        <Button Grid.Column="3" Style="{DynamicResource SystemButton}" x:Name="CloseButton" Content="r" Click="CloseButton_Click"/>
                     </Grid>
-                    <Label x:Name="FileName_Label" DockPanel.Dock="Right" Width="80" Content="파일명" Padding="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" BorderBrush="{Binding ElementName=border, Mode=OneWay}" FontSize="20"/>
-                    <Label Content="Hcode" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF52DA23" FontSize="24" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <Border DockPanel.Dock="Right"></Border>
                 </DockPanel>
             </Border>
-            <Border DockPanel.Dock="Left" Width="300" BorderBrush="White" BorderThickness="0.5" Margin="1">
+
+            <!-- 파일 탐색기 -->
+            <Border Width="200" x:Name="ExplorerWindow" DockPanel.Dock="Left" BorderBrush="White" BorderThickness="0.5" Margin="0">
                 <Grid>
                     <TreeView Name="folderTreeView" Margin="5" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
                         <TreeView.ItemTemplate>
@@ -71,18 +74,21 @@
                     </TreeView>
                 </Grid>
             </Border>
-            <Grid DockPanel.Dock="Top">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="7*"/>
-                    <RowDefinition Height="3*"/>
-                </Grid.RowDefinitions>
-                <Border x:Name="TextBoxBorder" Grid.Row="0" BorderBrush="White" BorderThickness="0.5" Margin="1">
-                    <Grid>
-                        <ScrollViewer x:Name="HighlightScrollViewer" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
-                            <TextBlock x:Name="HighlightedTextBlock"
+
+            <!-- Explorer Thumb -->
+            <Thumb x:Name="ExplorerThumb" DockPanel.Dock="Left" Width="10" DragDelta="ExplorerThumb_DragDelta">
+                <Thumb.Template>
+                    <ControlTemplate>
+                        <Rectangle Fill="#FF1D1D1D"/>
+                    </ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+
+            <!-- 코드 편집기 -->
+            <Border x:Name="TextBoxBorder" DockPanel.Dock="Top" Height="800" BorderBrush="White" BorderThickness="0.5">
+                <Grid>
+                    <ScrollViewer x:Name="HighlightScrollViewer" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+                        <TextBlock x:Name="HighlightedTextBlock"
                                 IsHitTestVisible="False"
                                 TextWrapping="Wrap"
                                 Padding="5"
@@ -90,9 +96,9 @@
                                 FontSize="20"
 								FontFamily="Consolas"									   
                                 Background="Transparent"/>
-                        </ScrollViewer>
-                        <ScrollViewer x:Name="TextScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ScrollChanged="TextScrollViewer_ScrollChanged">
-                            <TextBox x:Name="CodeTextBox"
+                    </ScrollViewer>
+                    <ScrollViewer x:Name="TextScrollViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ScrollChanged="TextScrollViewer_ScrollChanged">
+                        <TextBox x:Name="CodeTextBox"
                                 TextWrapping="Wrap"
                                 AcceptsReturn="True"
                                 Background="Transparent"
@@ -105,23 +111,25 @@
                                 FontSize="20"
 								FontFamily="Consolas"
                                 PreviewKeyDown="CodeTextBox_PreviewKeyDown"/>
-                        </ScrollViewer>
-                    </Grid>
-                </Border>
-                <Border Grid.Row="1" BorderBrush="White" BorderThickness="0.5" Margin="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="0.1*"/>
-                            <RowDefinition Height="0.8*"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Content="에러" FontSize="18" VerticalContentAlignment="Center" Padding="5,5,0,0" Foreground="White" Background="{x:Null}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                        <TextBox x:Name="OutputTextBox" Grid.Row="1" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Focusable="True" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" IsTabStop="False" IsReadOnly="False" />
-                    </Grid>
-                </Border>
-            </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- Editor Thumb -->
+            <Thumb x:Name="EditorThumb" DockPanel.Dock="Top" Height="10" DragDelta="EditorThumb_DragDelta">
+                <Thumb.Template>
+                    <ControlTemplate>
+                        <Rectangle Fill="#FF1D1D1D"/>
+                    </ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+
+            <Border DockPanel.Dock="Top" BorderBrush="White" BorderThickness="0.5" Margin="0">
+                <DockPanel>
+                    <Label DockPanel.Dock="Top" Content="에러" FontSize="16" VerticalContentAlignment="Center" Padding="5,5,0,0" Foreground="White" Background="{x:Null}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBox DockPanel.Dock="Top" x:Name="OutputTextBox" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" Focusable="True" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" IsTabStop="False" IsReadOnly="False" />
+                </DockPanel>
+            </Border>
         </DockPanel>
     </Border>
 </Window>

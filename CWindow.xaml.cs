@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Collections.Generic;
-
+using System.Windows.Controls.Primitives;
 
 namespace Hcode
 {
@@ -31,8 +31,6 @@ namespace Hcode
         public CWindow(string selectLanguage, string fileName)
         {
             this.InitializeComponent();
-            CodeTextBox.PreviewKeyDown += CodeTextBox_PreviewKeyDown;
-            CodeTextBox.PreviewTextInput += CodeTextBox_PreviewTextInput;
 
             //파일명 라벨 설정 및 UserProject 경로 지정
             FileName_Label.Content = fileName;
@@ -115,24 +113,35 @@ namespace Hcode
             userProjectPath = projectPath + "/" + Path.GetFileNameWithoutExtension(textBlock.Text);
         }
 
-        //private void OpenFileMenuItem_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (folderTreeView.SelectedItem != null && folderTreeView.SelectedItem is FileItem)
-        //    {
-        //        FileItem selectedItem = (FileItem)folderTreeView.SelectedItem;
-        //        string filePath = Path.Combine(projectPath + "/" + , selectedItem.Name); // 파일 경로 설정
-        //        Process.Start(filePath); // 파일 열기
-        //    }
-        //}
+        private void OpenFileMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (folderTreeView.SelectedItem != null && folderTreeView.SelectedItem is FileItem)
+            {
+                FileItem selectedItem = (FileItem)folderTreeView.SelectedItem;
+                string filePath = Path.Combine("C:\\Your\\Specific\\Path", selectedItem.Name); // 파일 경로 설정
+                Process.Start(filePath); // 파일 열기
+            }
+        }
 
-        //private void folderTreeView_MouseRightButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        //{
-        //    if (e.Source is FrameworkElement element)
-        //    {
-        //        element.Focus();
-        //        e.Handled = true;
-        //    }
-        //}
+        private void CloseFileMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // 파일을 닫는 추가적인 동작이 필요한 경우 이곳에 구현합니다.
+        }
+
+        private void OpenFolderMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (folderTreeView.SelectedItem != null && folderTreeView.SelectedItem is FolderItem)
+            {
+                FolderItem selectedItem = (FolderItem)folderTreeView.SelectedItem;
+                string folderPath = Path.Combine("C:\\Your\\Specific\\Path", selectedItem.Name); // 폴더 경로 설정
+                Process.Start(folderPath); // 폴더 열기
+            }
+        }
+
+        private void CloseFolderMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // 폴더를 닫는 추가적인 동작이 필요한 경우 이곳에 구현합니다.
+        }
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -214,12 +223,11 @@ namespace Hcode
                         {
                             // 컴파일 에러 발생 시 OutputTextBox에 에러 메시지 출력
                             OutputTextBox.Text = "컴파일 에러";
-                            // 해당 부분에서 TranslateErrorMessage으로 출력
-                            OutputTextBox.AppendText(TranslateErrorMessage(error.ToString()));                        }
+                            OutputTextBox.AppendText("\n" + error.ToString());
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 // 파일 저장 중 오류가 발생한 경우 오류 메시지를 표시합니다.
                 OutputTextBox.Text = $"파일 저장 중 오류가 발생했습니다: {ex.Message}";
@@ -227,92 +235,6 @@ namespace Hcode
             //트리 뷰 새로고침
             LoadFolderStructure(folderPath);
         }
-        
-        // 에러 메세지 한글 하드코딩(필요에 따라 알아서 넣을 것)
-        private string TranslateErrorMessage(string errorMessage)
-        {
-            var translations = new Dictionary<string, string>
-            {
-                { @"error:", "에러:" },
-                { @"warning:", "경고:" },
-                { @"1 error generated", "1개의 에러가 발생했습니다" },
-                { @"2 error generated", "2개의 에러가 발생했습니다" },
-                { @"3 error generated", "3개의 에러가 발생했습니다" },
-                { @"4 error generated", "4개의 에러가 발생했습니다" },
-                { @"5 error generated", "5개의 에러가 발생했습니다" },
-
-                // 구문 오류
-                { @"expected ';' after expression", "표현식 뒤에 ';'가 필요합니다" },
-                { @"expected ';' at end of declaration", "선언문의 끝에 ';'가 필요합니다" },
-                { @"expected identifier or '\('", "식별자 또는 '('이(가) 필요합니다" },
-                { @"expected unqualified-id", "자격이 없는 ID가 필요합니다" },
-                { @"expected expression", "표현식이 필요합니다" },
-                { @"expected '\)', got ';'", "');'이 필요합니다, ';'를 발견했습니다" },
-                { @"expected parameter declarator", "매개변수 선언자가 필요합니다" },
-                { @"expected '\}'", "'}'이(가) 필요합니다" },
-                { @"expected '>'", "'>'이(가) 필요합니다" },
-                { @"expected declaration", "선언이 필요합니다" },
-
-                // 타입 오류
-                { @"cannot convert '(.*)' to '(.*)' in initialization", "초기화에서 '{0}'를 '{1}'로 변환할 수 없습니다" },
-                { @"incompatible type for argument", "인수에 대해 호환되지 않는 타입입니다" },
-                { @"incompatible pointer to integer conversion passing '(.*)' to parameter of type '(.*)'", "'{0}'를 타입 '{1}'의 매개변수로 전달하는 포인터에서 정수로의 호환되지 않는 변환" },
-                { @"return type does not match the function type", "반환 타입이 함수 타입과 일치하지 않습니다" },
-
-                // 선언되지 않음 또는 정의되지 않음
-                { @"use of undeclared identifier '(.*)'", "선언되지 않은 식별자 '{0}'의 사용" },
-                { @"undefined reference to '(.*)'", "'{0}'에 대한 정의되지 않은 참조" },
-                { @"implicit declaration of function '(.*)' is invalid in C99", "함수 '{0}'의 암시적 선언은 C99에서 유효하지 않습니다" },
-
-                // 함수 및 변수 오류
-                { @"no matching function for call to '(.*)'", "'{0}' 호출에 대한 일치하는 함수가 없습니다" },
-                { @"too few arguments to function call", "함수 호출에 인수가 너무 적습니다" },
-                { @"too many arguments to function call", "함수 호출에 인수가 너무 많습니다" },
-                { @"redefinition of '(.*)'", "'{0}'의 재정의" },
-                { @"conflicting types for '(.*)'", "'{0}'의 타입 충돌" },
-                { @"function '(.*)' is not defined", "함수 '{0}'이(가) 정의되지 않았습니다" },
-
-                // 범위 및 접근 오류
-                { @"invalid use of non-static member function", "비정적 멤버 함수의 잘못된 사용" },
-                { @"invalid use of 'this' in non-member function", "비멤버 함수에서 'this'의 잘못된 사용" },
-                { @"member access into incomplete type '(.*)'", "불완전한 타입 '{0}'에 대한 멤버 접근" },
-                { @"no member named '(.*)' in '(.*)'", "'{1}'에 '{0}'라는 멤버가 없습니다" },
-
-                // 포인터 및 배열 오류
-                { @"subscripted value is not an array, pointer, or vector", "서브스크립트된 값이 배열, 포인터 또는 벡터가 아닙니다" },
-                { @"dereferencing pointer to incomplete type", "불완전한 타입에 대한 포인터 역참조" },
-                { @"array subscript is not an integer", "배열 서브스크립트가 정수가 아닙니다" },
-                { @"invalid operands to binary expression", "이진 표현식에 대한 잘못된 피연산자" },
-
-                // 링커 오류
-                { @"multiple definition of '(.*)'", "'{0}'의 다중 정의" },
-                { @"cannot find -l(.*)", "-l{0}을(를) 찾을 수 없습니다" },
-
-                // 경고
-                { @"comparison between signed and unsigned integer expressions", "부호가 있는 정수 표현식과 부호가 없는 정수 표현식 간의 비교" },
-                { @"unused variable '(.*)'", "사용되지 않은 변수 '{0}'" },
-                { @"unused function '(.*)'", "사용되지 않은 함수 '{0}'" },
-                { @"control reaches end of non-void function", "non-void 함수의 끝에 도달합니다" }
-            };
-
-            foreach (var entry in translations)
-            {
-                var regex = new Regex(entry.Key);
-                var matches = regex.Matches(errorMessage);
-                foreach (Match match in matches)
-                // 사용자 입력값 *를 찾아내기 위해 캡처그룹
-                {
-                    var groups = new List<string>();
-                    for (int i = 1; i < match.Groups.Count; i++)
-                    {
-                        groups.Add(match.Groups[i].Value);
-                    }
-                    errorMessage = regex.Replace(errorMessage, string.Format(entry.Value, groups.ToArray()));
-                }
-            }
-            return errorMessage;
-        }
-
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -360,7 +282,7 @@ namespace Hcode
 
             var patterns = new Dictionary<string, Brush>
     {
-        { @"#define", new SolidColorBrush(Color.FromRgb(61, 189, 61)) }, // 진한 초록색
+         { @"#define", new SolidColorBrush(Color.FromRgb(61, 189, 61)) }, // 진한 초록색
         { @"#include", new SolidColorBrush(Color.FromRgb(61, 189, 61)) },
 
         { @"\bprintf\b", new SolidColorBrush(Color.FromRgb(255, 165, 0)) }, // 연한 주황색
@@ -392,7 +314,6 @@ namespace Hcode
         { @"\bshort\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
         { @"\blong\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) },
         { @"\bunsigned\b", new SolidColorBrush(Color.FromRgb(25, 153, 228)) }
-        // 정규표현식 사용하여 필요에 따라 알아서 넣을 것
     };
 
             int lastIndex = 0;
@@ -433,12 +354,12 @@ namespace Hcode
                 int caretIndex2 = textBox.CaretIndex;
 
                 // 새로 추가된 문자가 괄호나 따옴표인지 확인합니다.
-                if (addedText == "<" || addedText == "(" || addedText == "[" || addedText == "'" || addedText == "\"")
+                if (addedText == "{" || addedText == "(" || addedText == "[" || addedText == "'" || addedText == "\"")
                 {
                     // 현재 커서 위치를 저장합니다.
                     int caretIndex = textBox.CaretIndex;
                     // 추가된 문자가 여는 괄호나 따옴표일 경우에는 그에 해당하는 닫는 괄호나 따옴표를 추가하고 커서를 원래 위치로 되돌립니다.
-                    string closingBracket = addedText == "<" ? ">" : (addedText == "(" ? ")" : (addedText == "[" ? "]" : (addedText == "'" ? "'" : "\"")));
+                    string closingBracket = addedText == "{" ? "}" : (addedText == "(" ? ")" : (addedText == "[" ? "]" : (addedText == "'" ? "'" : "\"")));
                     if (offset + addedLength < textBox.Text.Length && textBox.Text[offset + addedLength] == closingBracket[0])
                     {
                         // 이미 같은 종류의 괄호가 입력된 경우에는 추가하지 않습니다.
@@ -464,66 +385,80 @@ namespace Hcode
             }
         }
 
-
-
-
-
-
-
-
-
         private void CodeTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
-                int caretIndex = CodeTextBox.CaretIndex;
-                string textBeforeCaret = CodeTextBox.Text.Substring(0, caretIndex);
-                int braceCount = textBeforeCaret.Count(c => c == '{') - textBeforeCaret.Count(c => c == '}');
+            TextBox textBox = sender as TextBox;
+            if (textBox == null)
+                return;
 
-                if (braceCount > 0)
+            if (e.Key == Key.Tab)
+            {
+                InsertTab(textBox, 1);
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Enter)
+            {
+                int caretIndex = textBox.CaretIndex;
+                string text = textBox.Text;
+                int openBraceIndex = text.LastIndexOf('{', caretIndex - 1);
+                int closeBraceIndex = text.LastIndexOf('}', caretIndex - 1);
+
+                // 중괄호 내부에 있는지 확인
+                if (openBraceIndex > closeBraceIndex)
                 {
-                    string indentation = new string('\t', braceCount);
-                    CodeTextBox.SelectedText = "\n" + indentation;
-                    CodeTextBox.CaretIndex = caretIndex + 1 + indentation.Length;
+                    int indentLevel = GetIndentLevel(text, caretIndex);
+
+                    // Insert two new lines
+                    textBox.Text = text.Insert(caretIndex, Environment.NewLine + Environment.NewLine);
+                    textBox.CaretIndex = caretIndex + Environment.NewLine.Length;
+
+                    // 첫 번째 새로운 줄 다음에 Tab 입력
+                    InsertTab(textBox, indentLevel);
+
+                    // 두 번째 새로운 줄에 올바른 들여쓰기 적용
+                    int nextLineStartIndex = textBox.CaretIndex + Environment.NewLine.Length;
+                    if (nextLineStartIndex < textBox.Text.Length && textBox.Text[nextLineStartIndex] == '}')
+                    {
+                        textBox.CaretIndex += Environment.NewLine.Length;
+                        InsertTab(textBox, indentLevel - 1);
+                    }
+
                     e.Handled = true;
                 }
             }
-            else if (e.Key == Key.Tab)
-            {
-                int caretIndex = CodeTextBox.CaretIndex;
-                CodeTextBox.SelectedText = "\t";
-                CodeTextBox.CaretIndex = caretIndex + 1;
-                e.Handled = true;
-            }
-
         }
 
-        private void CodeTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void InsertTab(TextBox textBox, int tabCount)
         {
-            if (e.Text == "{")
+            if (textBox != null)
             {
-                int caretIndex = CodeTextBox.CaretIndex;
-                string indentation = new string('\t', CodeTextBox.Text.Substring(0, caretIndex).Count(c => c == '{') - CodeTextBox.Text.Substring(0, caretIndex).Count(c => c == '}') + 1);
-                CodeTextBox.SelectedText = "{\n" + indentation + "\n" + new string('\t', indentation.Length - 1) + "}";
-                CodeTextBox.CaretIndex = caretIndex + 2 + indentation.Length;
-                e.Handled = true;
+                int caretIndex = textBox.CaretIndex;
+                string tabs = new string('\t', tabCount);
+                textBox.Text = textBox.Text.Insert(caretIndex, tabs);
+                textBox.CaretIndex = caretIndex + tabCount;
             }
         }
 
+        private int GetIndentLevel(string text, int caretIndex)
+        {
+            int openBraceCount = 0;
+            int closeBraceCount = 0;
 
+            for (int i = 0; i < caretIndex; i++)
+            {
+                if (text[i] == '{')
+                {
+                    openBraceCount++;
+                }
+                else if (text[i] == '}')
+                {
+                    closeBraceCount++;
+                }
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
+            // 중첩된 수준을 반환
+            return openBraceCount - closeBraceCount;
+        }
 
 
 
@@ -543,8 +478,7 @@ namespace Hcode
 
                 // 성공적으로 저장되었다는 메시지를 표시합니다.
                 MessageBox.Show("파일이 성공적으로 저장되었습니다.", "알림", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 // 파일 저장 중 오류가 발생한 경우 오류 메시지를 표시합니다.
                 MessageBox.Show($"파일 저장 중 오류가 발생했습니다: {ex.Message}", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -564,6 +498,11 @@ namespace Hcode
         {
             Window HelpWindow = new HelpWindow();
             HelpWindow.Show();
+        }
+
+        private void OptionButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         // 클랭-포맷을 활용한 들여쓰기
@@ -618,6 +557,25 @@ namespace Hcode
             }
         }
 
+        private void ExplorerThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            double newWidth = ExplorerWindow.Width + e.HorizontalChange;
+
+            if (newWidth > 100 && newWidth < 1800)
+            {
+                ExplorerWindow.Width = newWidth;
+            }
+        }
+
+        private void EditorThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            double newHeight = TextBoxBorder.Height + e.VerticalChange;
+
+            if (newHeight > 100 && newHeight < 900)
+            {
+                TextBoxBorder.Height = newHeight;
+            }
+        }
 
 
 
