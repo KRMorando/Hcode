@@ -147,38 +147,28 @@ namespace Hcode
 
         private void CompileButton_Click(object sender, RoutedEventArgs e)
         {
-            // 사용자가 입력한 파일명을 가져옵니다.
             string fileName = FileName_Label.Content.ToString();
 
-            // 파일명이 null이거나 빈 문자열인지 확인합니다.
             if (string.IsNullOrEmpty(fileName))
             {
                 OutputTextBox.Text = "에러: 파일명을 입력해주세요.";
                 return;
             }
 
-            // 파일 내용을 가져옵니다.
             string sourceCode = CodeTextBox.Text;
-
-            // 파일 경로
-            string cFile = Path.Combine(userProjectPath, $"{fileName}.c");
+            string javaFilePath = Path.Combine(userProjectPath, $"{fileName}.java");
+            string classFilePath = Path.Combine(userProjectPath, fileName);
 
             try
             {
-                // 코드를 .c 파일로 저장합니다.
-                File.WriteAllText(cFile, sourceCode);
+                // 소스 코드 파일 저장
+                File.WriteAllText(javaFilePath, sourceCode);
 
-                // Define input values
-                string input = "5"; // Example input value
-
-                // 컴파일된 프로그램이 저장될 .exe 파일 경로
-                string exeFile = Path.Combine(userProjectPath, $"{fileName}.exe");
-
-                // 컴파일러 실행
+                // 자바 파일 컴파일
                 ProcessStartInfo psi = new ProcessStartInfo
                 {
-                    FileName = @"C:\Program Files\LLVM\bin\clang.exe",
-                    Arguments = $"-target x86_64-pc-windows-msvc {cFile} -o \"{exeFile}\"",
+                    FileName = @"C:\Program Files\Java\jdk-22\bin\javac.exe",
+                    Arguments = $"-d \"{userProjectPath}\" \"{javaFilePath}\"",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     RedirectStandardInput = true,
@@ -190,54 +180,40 @@ namespace Hcode
                 {
                     if (process != null)
                     {
-                        // Pass input to the process
-                        using (StreamWriter sw = process.StandardInput)
-                        {
-                            if (sw.BaseStream.CanWrite)
-                            {
-                                // Write input to the standard input stream
-                                sw.WriteLine(input);
-                                sw.Flush();
-                            }
-                        }
-
-                        // 컴파일러에서 오류 메시지 가져오기
                         StringBuilder error = new StringBuilder();
                         process.ErrorDataReceived += (s, args) => error.AppendLine(args.Data);
                         process.BeginErrorReadLine();
 
                         process.WaitForExit();
 
-                        if (process.ExitCode == 0)
+                        if (process.ExitCode != 0)
                         {
-                            // 컴파일이 성공 → 컴파일된 프로그램 실행
-                            ProcessStartInfo psi2 = new ProcessStartInfo
-                            {
-                                FileName = "cmd.exe",
-                                Arguments = $"/k echo off & echo \"{userProjectPath}\" && \"{exeFile}\"",
-                                UseShellExecute = false,
-                                CreateNoWindow = false
-                            };
-
-                            Process.Start(psi2);
-                        }
-                        else
-                        {
-                            // 컴파일 에러 발생 시 OutputTextBox에 에러 메시지 출력
                             OutputTextBox.Text = "컴파일 에러";
                             OutputTextBox.AppendText("\n" + error.ToString());
+                            return;
                         }
                     }
                 }
+
+                // 컴파일된 클래스 파일 실행
+                ProcessStartInfo psi2 = new ProcessStartInfo
+                {
+                    FileName = @"C:\Windows\System32\cmd.exe",
+                    Arguments = $"/k java -cp \"{userProjectPath}\" {fileName}",
+                    UseShellExecute = true,
+                    CreateNoWindow = false
+                };
+
+                Process.Start(psi2);
             }
             catch (Exception ex)
             {
-                // 파일 저장 중 오류가 발생한 경우 오류 메시지를 표시합니다.
                 OutputTextBox.Text = $"파일 저장 중 오류가 발생했습니다: {ex.Message}";
             }
-            //트리 뷰 새로고침
-            LoadFolderStructure(folderPath);
         }
+
+
+
 
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
@@ -474,7 +450,7 @@ namespace Hcode
             try
             {
                 // 파일을 저장할 경로를 지정합니다.
-                string cFile = userProjectPath + "/" + FileName_Label.Content.ToString() + ".c";
+                string cFile = userProjectPath + "/" + FileName_Label.Content.ToString() + ".java";
 
                 // 파일을 저장합니다.
                 File.WriteAllText(cFile, code);

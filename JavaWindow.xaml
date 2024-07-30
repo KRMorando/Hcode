@@ -85,7 +85,7 @@
             </Thumb>
 
             <!-- 코드 편집기 -->
-            <Border x:Name="TextBoxBorder" DockPanel.Dock="Top" Height="800" BorderBrush="White" BorderThickness="0.5">
+            <Border x:Name="TextBoxBorder" DockPanel.Dock="Top" Height="600" BorderBrush="White" BorderThickness="0.5">
                 <Grid>
                     <ScrollViewer x:Name="HighlightScrollViewer" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
                         <TextBlock x:Name="HighlightedTextBlock"
