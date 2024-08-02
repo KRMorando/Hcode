@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Input;
-//40차 커밋
+//43차 커밋
 
 namespace Hcode
 {
@@ -41,13 +41,11 @@ namespace Hcode
         {
             Window newWindow = new ShortCutWindow(this, "Java");
             newWindow.Show();
-            this.Close();
         }
         private void OnClickPButton(object sender, RoutedEventArgs e)
         {
             Window newWindow = new ShortCutWindow(this, "Python");
             newWindow.Show();
-            this.Close();
         }
 
         private void ToMiniButton_Click(object sender, RoutedEventArgs e)
